@@ -24,7 +24,7 @@ data Chart = Chart { chartSize  :: ChartSize,
 newtype ChartM a = ChartM {unChartM :: Chart -> a }
 
 instance Monad ChartM where
-  return x = ChartM $ \ _   ->  x
+  return = ChartM . const
   
   m >>= k  = ChartM $ \chart -> let v = unChartM m chart
                                in unChartM (k v) chart
@@ -41,7 +41,7 @@ defaultChart = Chart { chartSize  = Size 320 200,
 
 -- Setting/Encoding Chart Data
 
-getChart = ChartM $ \chart -> chart
+getChart = ChartM id
 
 updateChart u = do chart <- getChart
                    return $ u chart
@@ -84,7 +84,7 @@ setChartType :: ChartType -> ChartM Chart
 setChartType = set
 
 setChartTitle :: String -> ChartM Chart
-setChartTitle title = set (Just title)
+setChartTitle = set . Just
 
 {-
 
@@ -105,9 +105,9 @@ normalise datas = concatMap n datas
 -}
 
 -- URL Conversion
-getParams chart =  concat $ [encode $ chartType chart,
-                             encode $ chartTitle chart,
-                             encode $ chartSize chart]
+getParams chart =  concat [encode $ chartType chart,
+                           encode $ chartTitle chart,
+                           encode $ chartSize chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -140,7 +140,7 @@ urlEnc str = concatMap enc str where
 
 -- API Functions
 
-getChartData m = unChartM m $ defaultChart
+getChartData m = unChartM m defaultChart
 
 getUrl =  convertToUrl . getChartData
 
