@@ -12,7 +12,7 @@ data ChartType = Line |
 
 type ChartTitle = Maybe String
 
-                            
+
 data ChartData = D [Int] |
                  XY [(Int,Int)] deriving Show
 
@@ -25,7 +25,7 @@ newtype ChartM a = ChartM {unChartM :: Chart -> a }
 
 instance Monad ChartM where
   return = ChartM . const
-  
+
   m >>= k  = ChartM $ \chart -> let v = unChartM m chart
                                in unChartM (k v) chart
 
@@ -46,7 +46,7 @@ getChart = ChartM id
 updateChart u = do chart <- getChart
                    return $ u chart
 
-asList a = [a]                      
+asList a = [a]
 
 
 -- size
