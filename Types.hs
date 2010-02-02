@@ -13,38 +13,30 @@ data ChartType = Line |
 type ChartTitle = Maybe String
 
 
-data ChartData = D [Int] |
-                 XY [(Int,Int)] deriving Show
+data ChartData = D [[Int]] deriving Show
 
 data Chart = Chart { chartSize  :: ChartSize,
                      chartType  :: ChartType,
                      chartTitle :: ChartTitle,
-                     chartData  :: [ChartData] } deriving Show
+                     chartData  :: ChartData } deriving Show
 
-newtype ChartM a = ChartM {unChartM :: Chart -> a }
+type ChartM a = State Chart a
 
-instance Monad ChartM where
-  return = ChartM . const
-
-  m >>= k  = ChartM $ \chart -> let v = unChartM m chart
-                               in unChartM (k v) chart
 
 class ChartItem c where
-  set :: c -> ChartM Chart
+  set :: c -> ChartM ()
   encode :: c -> [(String,String)]
 
 
 defaultChart = Chart { chartSize  = Size 320 200,
                        chartType  = Line,
-                       chartData  = [],
+                       chartData  = D [],
                        chartTitle = Nothing }
 
 -- Setting/Encoding Chart Data
 
-getChart = ChartM id
-
-updateChart u = do chart <- getChart
-                   return $ u chart
+updateChart u = do chart <- get
+                   put $ u chart
 
 asList a = [a]
 
@@ -75,16 +67,33 @@ instance ChartItem ChartTitle where
                      Just t -> asList ("chl", t)
                      _      -> []
 
+-- data
+-- FIXME just a placeholder for now
+instance ChartItem ChartData where
+    set cData = updateChart $ \chart -> chart { chartData = cData }
+
+    encode (D cData) = asList ("chd", encodeSimple cData)
+
+
+addDataToChart :: [Int] -> ChartM ()
+addDataToChart d = do c <- get
+                      let D old = chartData c
+                          new = D (old ++ [d])
+                      set new
+
+
 -- helper functions for syntactic sugar
 
-setChartSize :: Int -> Int -> ChartM Chart
+setChartSize :: Int -> Int -> ChartM ()
 setChartSize w h = set (Size w h)
 
-setChartType :: ChartType -> ChartM Chart
+setChartType :: ChartType -> ChartM ()
 setChartType = set
 
-setChartTitle :: String -> ChartM Chart
+setChartTitle :: String -> ChartM ()
 setChartTitle = set . Just
+
+addChartData = addDataToChart
 
 {-
 
@@ -107,7 +116,8 @@ normalise datas = concatMap n datas
 -- URL Conversion
 getParams chart =  concat [encode $ chartType chart,
                            encode $ chartTitle chart,
-                           encode $ chartSize chart]
+                           encode $ chartSize chart,
+                           encode $ chartData chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -140,12 +150,12 @@ urlEnc str = concatMap enc str where
 
 -- API Functions
 
-getChartData m = unChartM m defaultChart
+getChartData m = execState m defaultChart
 
 getUrl =  convertToUrl . getChartData
 
-debugChart = getUrl $ do setChartSize 320 200
-                         setChartType Line
+debugChart = getUrl $ do setChartSize 640 400
+                         setChartType Sparklines
                          setChartTitle "Test"
-                         -- addChartData $ D [1,2,3,4,5]
-                         -- addChartData $ D [3,4,5,6,7]
+                         addChartData  [1,2,3,4,5]
+                         addChartData  [3,4,5,6,7]
