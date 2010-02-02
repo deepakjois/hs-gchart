@@ -12,13 +12,15 @@ data ChartType = Line |
 
 type ChartTitle = Maybe String
 
-
 data ChartData = D [[Int]] deriving Show
 
-data Chart = Chart { chartSize  :: ChartSize,
-                     chartType  :: ChartType,
-                     chartTitle :: ChartTitle,
-                     chartData  :: ChartData } deriving Show
+type ChartColors = Maybe [String] 
+
+data Chart = Chart { chartSize   :: ChartSize,
+                     chartType   :: ChartType,
+                     chartTitle  :: ChartTitle,
+                     chartData   :: ChartData,
+                     chartColors :: ChartColors } deriving Show
 
 type ChartM a = State Chart a
 
@@ -31,7 +33,8 @@ class ChartItem c where
 defaultChart = Chart { chartSize  = Size 320 200,
                        chartType  = Line,
                        chartData  = D [],
-                       chartTitle = Nothing }
+                       chartTitle = Nothing,
+                       chartColors = Nothing}
 
 -- Setting/Encoding Chart Data
 
@@ -82,42 +85,21 @@ addDataToChart d = do c <- get
                       set new
 
 
--- helper functions for syntactic sugar
+-- color
 
-setChartSize :: Int -> Int -> ChartM ()
-setChartSize w h = set (Size w h)
+instance ChartItem ChartColors where
+    set colors = updateChart $ \chart -> chart { chartColors = colors }
 
-setChartType :: ChartType -> ChartM ()
-setChartType = set
-
-setChartTitle :: String -> ChartM ()
-setChartTitle = set . Just
-
-addChartData = addDataToChart
-
-{-
-
-
-addChartData = updateChart . flip addDataToChart
-
-addDataToChart cd d = cd { chartData = old ++ [d] }
-                      where old = chartData cd
-
-
--- data
-encodeChartData datas = asList ("chd", encodeSimple $ normalise datas)
-
-normalise datas = concatMap n datas
-                  where n (D d) = [d]
-                        n (XY d) = map fst d :  [map snd d]
-
--}
+    encode colors = case colors of 
+                      Just c -> asList ("chco", intercalate "," c)
+                      _      -> []
 
 -- URL Conversion
 getParams chart =  concat [encode $ chartType chart,
                            encode $ chartTitle chart,
                            encode $ chartSize chart,
-                           encode $ chartData chart]
+                           encode $ chartData chart,
+                           encode $ chartColors chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -148,6 +130,21 @@ urlEnc str = concatMap enc str where
   safe = "$-_.!*'(),|:"
 
 
+-- helper functions for syntactic sugar
+
+setChartSize :: Int -> Int -> ChartM ()
+setChartSize w h = set (Size w h)
+
+setChartType :: ChartType -> ChartM ()
+setChartType = set
+
+setChartTitle :: String -> ChartM ()
+setChartTitle = set . Just
+
+addChartData = addDataToChart
+
+addColors = set . Just
+
 -- API Functions
 
 getChartData m = execState m defaultChart
@@ -155,7 +152,8 @@ getChartData m = execState m defaultChart
 getUrl =  convertToUrl . getChartData
 
 debugChart = getUrl $ do setChartSize 640 400
-                         setChartType Sparklines
+                         setChartType Line
                          setChartTitle "Test"
                          addChartData  [1,2,3,4,5]
                          addChartData  [3,4,5,6,7]
+                         addColors ["FF0000","00FF00"]
