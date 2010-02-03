@@ -83,13 +83,13 @@ encodeFill (Fill kind fType) = case kind of
 
                                  LinearGradient angle offsets -> intercalate "," [fillType,
                                                                                   "lg",
-                                                                                  (show angle),
-                                                                                  intercalate "," $ map  (\(c,o) -> c ++ "," ++ (show o) ) offsets]
+                                                                                  show angle,
+                                                                                  intercalate "," $ map  (\(c,o) -> c ++ "," ++ show o ) offsets]
 
                                  LinearStripes angle widths ->   intercalate "," [fillType,
                                                                                   "ls",
-                                                                                  (show angle),
-                                                                                  intercalate "," $ map (\(c,w) -> c ++ "," ++ (show w)) widths]
+                                                                                  show angle,
+                                                                                  intercalate "," $ map (\(c,w) -> c ++ "," ++ show w) widths]
                                  where fillType = case fType of
                                                     Background  -> "bg"
                                                     Area        -> "c"
@@ -107,7 +107,7 @@ addFillToChart fill = do chart <- get
 instance ChartItem ChartLegend where
     set legend = updateChart $ \chart -> chart { chartLegend = Just legend }
 
-    encode (Legend labels position) = [encodeTitle] ++ (encodePosition position) where
+    encode (Legend labels position) = [encodeTitle] ++ encodePosition position where
                                encodeTitle = ("chdl", intercalate "|" labels)
                                encodePosition Nothing = []
                                encodePosition (Just p) = let pos = case p of
@@ -117,14 +117,14 @@ instance ChartItem ChartLegend where
                                                                     VTop    -> "tv"
                                                                     Right   -> "r"
                                                                     Left    -> "l"
-                                                        in  asList $ ("chdlp",pos)
+                                                        in  asList ("chdlp",pos)
 
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
 encodeMaybe Nothing = [("","")]
 encodeMaybe (Just x)  = encode x
 
-getParams chart =  filter (\f -> f /= ("","")) $ concat [encode $ chartType chart,
+getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                          encode $ chartSize chart,
                                                          encode $ chartData chart,
                                                          encodeMaybe $ chartTitle  chart,
@@ -161,15 +161,15 @@ urlEnc str = concatMap enc str where
   safe = "$-_.!*'(),|:"
 
 
--- helper functions to construct data
+-- smart constructors
 
-solid color fType = Fill (Solid color) fType
+solid = Fill . Solid
 
 legend labels = Legend labels Nothing
 
 legendWithPosition labels position = Legend labels (Just position)
 
--- helper functions for syntactic sugar in monad
+-- helper functions
 
 setChartSize w h = set (Size w h)
 
