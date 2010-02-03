@@ -7,6 +7,7 @@ import Data.Maybe
 import Data.Char (chr, ord)
 import Numeric (showHex)
 import Types
+import Prelude hiding (Right, Left)
 -- Setting/Encoding Chart Data
 
 updateChart u = do chart <- get
@@ -97,8 +98,26 @@ encodeFill (Fill kind fType) = case kind of
 
 addFillToChart fill = do chart <- get
                          let fills = fromMaybe [] $ chartFills chart
-                             newFills = fills ++ [fill]
+                             newFills = fills ++ asList fill
                          set newFills
+
+
+-- legend
+
+instance ChartItem ChartLegend where
+    set legend = updateChart $ \chart -> chart { chartLegend = Just legend }
+
+    encode (Legend labels position) = [encodeTitle] ++ (encodePosition position) where
+                               encodeTitle = ("chdl", intercalate "|" labels)
+                               encodePosition Nothing = []
+                               encodePosition (Just p) = let pos = case p of
+                                                                    Bottom  -> "b"
+                                                                    Top     -> "t"
+                                                                    VBottom -> "bv"
+                                                                    VTop    -> "tv"
+                                                                    Right   -> "r"
+                                                                    Left    -> "l"
+                                                        in  asList $ ("chdlp",pos)
 
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
@@ -110,7 +129,8 @@ getParams chart =  filter (\f -> f /= ("","")) $ concat [encode $ chartType char
                                                          encode $ chartData chart,
                                                          encodeMaybe $ chartTitle  chart,
                                                          encodeMaybe $ chartColors chart,
-                                                         encodeMaybe $ chartFills  chart]
+                                                         encodeMaybe $ chartFills  chart,
+                                                         encodeMaybe $ chartLegend chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -145,6 +165,10 @@ urlEnc str = concatMap enc str where
 
 solid color fType = Fill (Solid color) fType
 
+legend labels = Legend labels Nothing
+
+legendWithPosition labels position = Legend labels (Just position)
+
 -- helper functions for syntactic sugar in monad
 
 setChartSize w h = set (Size w h)
@@ -161,6 +185,8 @@ addColor  = addColorToChart
 
 addFill = addFillToChart
 
+addLegend = set
+
 -- API Functions
 
 getChartData m = execState m defaultChart
@@ -176,3 +202,4 @@ debugChart = getUrl $ do setChartSize 640 400
                          addColor "FF0000"
                          addColor "00FF00"
                          addFill $ solid "0000FF" Background
+                         addLegend $ legendWithPosition ["t1","t2"] VBottom

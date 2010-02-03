@@ -1,5 +1,4 @@
 * Support for
-  - Legend
   - Axis
   - Markers
   - Pie Chart and Google-o-Meter labels

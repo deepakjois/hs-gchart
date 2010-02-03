@@ -37,6 +37,10 @@ data Fill = Fill FillKind FillType deriving Show
 
 type ChartFills = [Fill]
 
+-- legend
+data LegendPosition = Bottom | Top | VBottom | VTop | Right | Left deriving Show
+data ChartLegend = Legend [String] (Maybe LegendPosition) deriving Show
+
 
 -- chart
 data Chart = Chart { chartSize   :: ChartSize,
@@ -44,7 +48,8 @@ data Chart = Chart { chartSize   :: ChartSize,
                      chartData   :: ChartData,
                      chartTitle  :: Maybe ChartTitle,
                      chartColors :: Maybe ChartColors,
-                     chartFills  :: Maybe ChartFills }  deriving Show
+                     chartFills  :: Maybe ChartFills,
+                     chartLegend :: Maybe ChartLegend }  deriving Show
 
 -- Monad
 type ChartM a = State Chart a
@@ -62,5 +67,6 @@ defaultChart = Chart { chartSize  = Size 320 200,
                        chartData  = D [],
                        chartTitle = Nothing,
                        chartColors = Nothing,
-                       chartFills = Nothing }
+                       chartFills = Nothing,
+                       chartLegend = Nothing }
 
