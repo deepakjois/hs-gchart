@@ -107,7 +107,7 @@ addFillToChart fill = do chart <- get
 instance ChartItem ChartLegend where
     set legend = updateChart $ \chart -> chart { chartLegend = Just legend }
 
-    encode (Legend labels position) = [encodeTitle] ++ encodePosition position where
+    encode (Legend labels position) = encodeTitle : encodePosition position where
                                encodeTitle = ("chdl", intercalate "|" labels)
                                encodePosition Nothing = []
                                encodePosition (Just p) = let pos = case p of
@@ -117,7 +117,85 @@ instance ChartItem ChartLegend where
                                                                     VTop    -> "tv"
                                                                     Right   -> "r"
                                                                     Left    -> "l"
-                                                        in  asList ("chdlp",pos)
+                                                         in  asList ("chdlp",pos)
+
+-- AXIS
+instance ChartItem ChartAxes where
+    set axes = updateChart $ \chart -> chart { chartAxes = Just axes }
+
+    encode axes = filter (/= ("","")) $ map (\f -> f axes) [encodeAxesTypes,
+                                                            encodeAxesLabels,
+                                                            encodeAxesPositions,
+                                                            encodeAxesRanges,
+                                                            encodeAxesStyles]
+
+addAxisToChart axis = do chart <- get
+                         let old = fromMaybe [] $ chartAxes chart
+                             new = old ++ [axis]
+                         set new
+
+
+convertFieldToString encoder field = intercalate "|" .
+                                     map encoder .
+                                     filter (\(_,maybeField) -> maybeField /= Nothing) .
+                                     indexed . map field
+
+indexed = zip [0..]
+
+encodeFieldToParams fieldParam fieldStr | fieldStr == "" = ("","")
+                                        | otherwise = (fieldParam, fieldStr)
+
+encodeAxesTypes axes = ("chxt",a) where
+                       a = intercalate "," $ map toParam axes
+                       toParam axes = case axisType axes of
+                                        AxisBottom -> "x"
+                                        AxisTop    -> "t"
+                                        AxisLeft   -> "y"
+                                        AxisRight  -> "r"
+
+-- axis labels
+strAxisLabels (idx,Just labels) = show idx ++ ":|" ++ intercalate "|" labels
+
+strAxesLabels = convertFieldToString strAxisLabels axisLabels
+
+encodeAxesLabels = encodeFieldToParams "chxl" . strAxesLabels
+
+-- axis positions
+strAxisPositions (idx, Just positions) = show idx ++ "," ++ intercalate "," (map show positions)
+
+strAxesPositions = convertFieldToString strAxisPositions axisPositions
+
+encodeAxesPositions = encodeFieldToParams "chxp" . strAxesPositions
+
+-- axis ranges
+strAxisRange (idx, Just range) = show idx ++ "," ++ intercalate "," (encodeRange range)
+                                 where encodeRange (Range (start,end) interval) | interval == Nothing = [show start, show end]
+                                                                                | otherwise = [show start, show end, show (fromJust interval)]
+
+strAxesRanges = convertFieldToString strAxisRange axisRange
+
+encodeAxesRanges = encodeFieldToParams "chxr" . strAxesRanges
+
+-- axis style
+strAxisStyle (idx, Just style) = show idx ++ "," ++ intercalate "," (catMaybes (encodeStyle style))
+                                    where encodeStyle (Style a b c d e) = [Just a,
+                                                                           liftM show b,
+                                                                           liftM encodeAlign c,
+                                                                           liftM encodeDrawingControl d,
+                                                                           liftM id e]
+                                          encodeAlign c = case c of
+                                                            AxisStyleLeft -> "-1"
+                                                            AxisStyleCenter -> "0"
+                                                            AxisStyleRight -> "1"
+                                          encodeDrawingControl d = case d of
+                                                                     DrawLines -> "l"
+                                                                     DrawTicks -> "t"
+                                                                     DrawLinesTicks -> "lt"
+
+strAxesStyles = convertFieldToString strAxisStyle axisStyle
+
+encodeAxesStyles = encodeFieldToParams "chxs" . strAxesStyles
+
 
 
 -- URL Conversion
@@ -131,7 +209,8 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                          encodeMaybe $ chartTitle  chart,
                                                          encodeMaybe $ chartColors chart,
                                                          encodeMaybe $ chartFills  chart,
-                                                         encodeMaybe $ chartLegend chart]
+                                                         encodeMaybe $ chartLegend chart,
+                                                         encodeMaybe $ chartAxes   chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -188,6 +267,8 @@ addFill = addFillToChart
 
 addLegend = set
 
+addAxis = addAxisToChart
+
 -- API Functions
 
 getChartData m = execState m defaultChart
@@ -199,8 +280,8 @@ debugChart = getUrl $ do setChartSize 640 400
                          setChartTitle "Test"
                          addChartData  [1,2,3,4,5]
                          addChartData  [3,4,5,6,7]
-                         -- can use addColors also
                          addColor "FF0000"
                          addColor "00FF00"
-                         addFill $ solid "0000FF" Background
+                         addFill $ solid "DD00DD" Background
                          addLegend $ legendWithPosition ["t1","t2"] VBottom
+                         addAxis $ defaultAxis { axisStyle = Just defaultAxisStyle }

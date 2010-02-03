@@ -47,16 +47,16 @@ data ChartLegend = Legend [String] (Maybe LegendPosition) deriving Show
 data AxisType = AxisBottom | AxisTop | AxisLeft | AxisRight deriving Show
 type AxisLabel = String
 type AxisPosition = Float
-data AxisRange = Range (Float,Float) (Maybe Float) deriving Show
+data AxisRange = Range (Float,Float) (Maybe Float) deriving (Show,Eq)
 
 type FontSize = Int
-data AxisStyleAlignment = AxisStyleLeft | AxisStyleCenter | AxisStyleRight deriving Show
-data DrawingControl = DrawLines | DrawTicks | DrawLinesTick deriving Show
+data AxisStyleAlignment = AxisStyleLeft | AxisStyleCenter | AxisStyleRight deriving (Show,Eq)
+data DrawingControl = DrawLines | DrawTicks | DrawLinesTicks deriving (Show,Eq)
 data AxisStyle = Style { axisColor :: Color,
                          axisFontSize :: Maybe FontSize,
                          axisStyleAlign :: Maybe AxisStyleAlignment,
                          axisDrawingControl :: Maybe DrawingControl,
-                         tickMarkColor      :: Maybe Color } deriving Show
+                         tickMarkColor      :: Maybe Color } deriving (Show,Eq)
 
 data Axis = Axis { axisType :: AxisType,
                    axisLabels :: Maybe [AxisLabel],
