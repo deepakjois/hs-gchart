@@ -149,7 +149,7 @@ addFillToChart fill = do chart <- get
                          set newFills
 
 -- URL Conversion
--- FIXME : too much boilerplate
+-- FIXME : too much boilerplate. Can it be reduced?
 encodeMaybe Nothing = [("","")]
 encodeMaybe (Just x)  = encode x
 
@@ -189,7 +189,11 @@ urlEnc str = concatMap enc str where
   safe = "$-_.!*'(),|:"
 
 
--- helper functions for syntactic sugar
+-- helper functions to construct data
+
+solid color fType = Fill (Solid color) fType
+
+-- helper functions for syntactic sugar in monad
 
 setChartSize w h = set (Size w h)
 
@@ -219,4 +223,4 @@ debugChart = getUrl $ do setChartSize 640 400
                          -- can use addColors also
                          addColor "FF0000"
                          addColor "00FF00"
-                         addFill $ Fill (Solid "0000FF") Background
+                         addFill $ solid "0000FF" Background
