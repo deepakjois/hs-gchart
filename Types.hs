@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 import Control.Monad.State
 import Data.List
+import Data.Maybe
 import Data.Char (chr, ord)
 import Numeric (showHex)
 
@@ -10,17 +11,34 @@ data ChartType = Line |
                  Sparklines |
                  LineXY deriving Show
 
-type ChartTitle = Maybe String
+type ChartTitle = String
 
 data ChartData = D [[Int]] deriving Show
 
-type ChartColors = Maybe [String] 
+type Color = String
+
+type ChartColors = [Color]
+
+type Offset = Float
+type Angle = Float
+type Width = Float
+
+data FillKind = Solid Color |
+                LinearGradient Angle [(Color,Offset)]  |
+                LinearStripes Angle [(Color,Width)]  deriving Show
+
+data FillType = Background | Area | Transparent deriving Show
+
+data Fill = Fill FillKind FillType deriving Show
+
+type ChartFills = [Fill]
 
 data Chart = Chart { chartSize   :: ChartSize,
                      chartType   :: ChartType,
-                     chartTitle  :: ChartTitle,
                      chartData   :: ChartData,
-                     chartColors :: ChartColors } deriving Show
+                     chartTitle  :: Maybe ChartTitle,
+                     chartColors :: Maybe ChartColors,
+                     chartFills  :: Maybe ChartFills }  deriving Show
 
 type ChartM a = State Chart a
 
@@ -34,7 +52,8 @@ defaultChart = Chart { chartSize  = Size 320 200,
                        chartType  = Line,
                        chartData  = D [],
                        chartTitle = Nothing,
-                       chartColors = Nothing}
+                       chartColors = Nothing,
+                       chartFills = Nothing }
 
 -- Setting/Encoding Chart Data
 
@@ -64,11 +83,10 @@ instance ChartItem ChartType where
 
 -- title
 instance ChartItem ChartTitle where
-    set title = updateChart $ \chart -> chart { chartTitle = title }
+    set title = updateChart $ \chart -> chart { chartTitle = Just title }
 
-    encode title = case title of
-                     Just t -> asList ("chl", t)
-                     _      -> []
+    encode title = asList ("chl", title)
+
 
 -- data
 -- FIXME just a placeholder for now
@@ -88,18 +106,59 @@ addDataToChart d = do c <- get
 -- color
 
 instance ChartItem ChartColors where
-    set colors = updateChart $ \chart -> chart { chartColors = colors }
+    set colors = updateChart $ \chart -> chart { chartColors = Just colors }
 
-    encode colors = case colors of 
-                      Just c -> asList ("chco", intercalate "," c)
-                      _      -> []
+    encode colors = asList ("chco", intercalate "," colors)
+
+
+
+addColorToChart color = do chart <- get
+                           let old = fromMaybe [] $ chartColors chart
+                               new = old ++ [color]
+                           set new
+
+-- fill
+
+instance ChartItem ChartFills where
+    set fills = updateChart $ \chart -> chart { chartFills = Just fills }
+
+    encode fills = asList ("chf",intercalate "|" $ map encodeFill fills)
+
+
+encodeFill (Fill kind fType) = case kind of
+                                 Solid color -> intercalate "," [fillType,"s",color]
+
+                                 LinearGradient angle offsets -> intercalate "," [fillType,
+                                                                                  "lg",
+                                                                                  (show angle),
+                                                                                  intercalate "," $ map  (\(c,o) -> c ++ "," ++ (show o) ) offsets]
+
+                                 LinearStripes angle widths ->   intercalate "," [fillType,
+                                                                                  "ls",
+                                                                                  (show angle),
+                                                                                  intercalate "," $ map (\(c,w) -> c ++ "," ++ (show w)) widths]
+                                 where fillType = case fType of
+                                                    Background  -> "bg"
+                                                    Area        -> "c"
+                                                    Transparent -> "a"
+
+
+addFillToChart fill = do chart <- get
+                         let fills = fromMaybe [] $ chartFills chart
+                             newFills = fills ++ [fill]
+                         set newFills
 
 -- URL Conversion
-getParams chart =  concat [encode $ chartType chart,
-                           encode $ chartTitle chart,
-                           encode $ chartSize chart,
-                           encode $ chartData chart,
-                           encode $ chartColors chart]
+-- FIXME : too much boilerplate
+encodeMaybe Nothing = [("","")]
+encodeMaybe (Just x)  = encode x
+
+getParams chart =  filter (\f -> f /= ("","")) $ concat [encode $ chartType chart,
+                                                         encode $ chartSize chart,
+                                                         encode $ chartData chart,
+                                                         encodeMaybe $ chartTitle  chart,
+                                                         encodeMaybe $ chartColors chart,
+                                                         encodeMaybe $ chartFills  chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -132,18 +191,19 @@ urlEnc str = concatMap enc str where
 
 -- helper functions for syntactic sugar
 
-setChartSize :: Int -> Int -> ChartM ()
 setChartSize w h = set (Size w h)
 
-setChartType :: ChartType -> ChartM ()
 setChartType = set
 
-setChartTitle :: String -> ChartM ()
-setChartTitle = set . Just
+setChartTitle = set
 
 addChartData = addDataToChart
 
-addColors = set . Just
+addColors = set
+
+addColor  = addColorToChart
+
+addFill = addFillToChart
 
 -- API Functions
 
@@ -156,4 +216,7 @@ debugChart = getUrl $ do setChartSize 640 400
                          setChartTitle "Test"
                          addChartData  [1,2,3,4,5]
                          addChartData  [3,4,5,6,7]
-                         addColors ["FF0000","00FF00"]
+                         -- can use addColors also
+                         addColor "FF0000"
+                         addColor "00FF00"
+                         addFill $ Fill (Solid "0000FF") Background
