@@ -38,8 +38,33 @@ data Fill = Fill FillKind FillType deriving Show
 type ChartFills = [Fill]
 
 -- legend
+-- FIXME change it to not clash with Prelude.Left and Prelude.Right
 data LegendPosition = Bottom | Top | VBottom | VTop | Right | Left deriving Show
 data ChartLegend = Legend [String] (Maybe LegendPosition) deriving Show
+
+
+-- axis
+data AxisType = AxisBottom | AxisTop | AxisLeft | AxisRight deriving Show
+type AxisLabel = String
+type AxisPosition = Float
+data AxisRange = Range (Float,Float) (Maybe Float) deriving Show
+
+type FontSize = Int
+data AxisStyleAlignment = AxisStyleLeft | AxisStyleCenter | AxisStyleRight deriving Show
+data DrawingControl = DrawLines | DrawTicks | DrawLinesTick deriving Show
+data AxisStyle = Style { axisColor :: Color,
+                         axisFontSize :: Maybe FontSize,
+                         axisStyleAlign :: Maybe AxisStyleAlignment,
+                         axisDrawingControl :: Maybe DrawingControl,
+                         tickMarkColor      :: Maybe Color } deriving Show
+
+data Axis = Axis { axisType :: AxisType,
+                   axisLabels :: Maybe [AxisLabel],
+                   axisPositions :: Maybe [AxisPosition],
+                   axisRange :: Maybe AxisRange,
+                   axisStyle :: Maybe AxisStyle } deriving Show
+
+type ChartAxes = [Axis]
 
 
 -- chart
@@ -49,7 +74,9 @@ data Chart = Chart { chartSize   :: ChartSize,
                      chartTitle  :: Maybe ChartTitle,
                      chartColors :: Maybe ChartColors,
                      chartFills  :: Maybe ChartFills,
-                     chartLegend :: Maybe ChartLegend }  deriving Show
+                     chartLegend :: Maybe ChartLegend,
+                     chartAxes   :: Maybe ChartAxes }  deriving Show
+
 
 -- Monad
 type ChartM a = State Chart a
@@ -68,5 +95,19 @@ defaultChart = Chart { chartSize  = Size 320 200,
                        chartTitle = Nothing,
                        chartColors = Nothing,
                        chartFills = Nothing,
-                       chartLegend = Nothing }
+                       chartLegend = Nothing,
+                       chartAxes = Nothing }
 
+
+defaultAxis = Axis { axisType = AxisBottom,
+                     axisLabels = Nothing,
+                     axisPositions = Nothing,
+                     axisRange = Nothing,
+                     axisStyle = Nothing }
+
+
+defaultAxisStyle = Style { axisColor = "0000DD",
+                           axisFontSize = Nothing,
+                           axisStyleAlign = Nothing,
+                           axisDrawingControl = Nothing,
+                           tickMarkColor = Nothing }

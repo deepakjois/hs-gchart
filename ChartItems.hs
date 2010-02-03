@@ -119,6 +119,7 @@ instance ChartItem ChartLegend where
                                                                     Left    -> "l"
                                                         in  asList ("chdlp",pos)
 
+
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
 encodeMaybe Nothing = [("","")]
