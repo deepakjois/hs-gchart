@@ -73,16 +73,34 @@ data ChartGrid = ChartGrid { xAxisStep :: Float,
                              xOffset :: Maybe Float,
                              yOffset :: Maybe Float } deriving Show
 
+
+data ShapeType = ShapeArrow | ShapeCross | ShapeDiamond | ShapeCircle | ShapeSquare | VerticalLine | VerticalLineFull | HorizontalLine | ShapeX deriving Show
+data ShapeDataPoint =  DataPoint Int | DataPointEvery | DataPointEveryN Int | DataPointEveryNRange Int Int Int | DataPointXY Float Float deriving Show
+data RangeMarkerType = RangeMarkerHorizontal | RangeMarkerVertical deriving Show
+
+data ChartMarker =  ShapeMarker { shapeType  :: ShapeType,
+                                  shapeColor :: Color,
+                                  shapeDataSetIdx :: Int,
+                                  shapeDataPoint  :: ShapeDataPoint,
+                                  shapeSize :: Int,
+                                  shapePriority :: Int
+                                 } |
+                    RangeMarker { rangeType  :: RangeMarkerType,
+                                  rangeColor :: Color,
+                                  rangeSpan :: (Float,Float) } deriving Show
+
+type ChartMarkers = [ChartMarker]
 -- chart
-data Chart = Chart { chartSize   :: ChartSize,
-                     chartType   :: ChartType,
-                     chartData   :: ChartData,
-                     chartTitle  :: Maybe ChartTitle,
-                     chartColors :: Maybe ChartColors,
-                     chartFills  :: Maybe ChartFills,
-                     chartLegend :: Maybe ChartLegend,
-                     chartAxes   :: Maybe ChartAxes,
-                     chartGrid   :: Maybe ChartGrid } deriving Show
+data Chart = Chart { chartSize    :: ChartSize,
+                     chartType    :: ChartType,
+                     chartData    :: ChartData,
+                     chartTitle   :: Maybe ChartTitle,
+                     chartColors  :: Maybe ChartColors,
+                     chartFills   :: Maybe ChartFills,
+                     chartLegend  :: Maybe ChartLegend,
+                     chartAxes    :: Maybe ChartAxes,
+                     chartGrid    :: Maybe ChartGrid,
+                     chartMarkers :: Maybe ChartMarkers } deriving Show
 
 -- Monad
 type ChartM a = State Chart a
@@ -103,7 +121,8 @@ defaultChart = Chart { chartSize  = Size 320 200,
                        chartFills = Nothing,
                        chartLegend = Nothing,
                        chartAxes = Nothing,
-                       chartGrid = Nothing }
+                       chartGrid = Nothing,
+                       chartMarkers = Nothing }
 
 
 defaultAxis = Axis { axisType = AxisBottom,
@@ -126,3 +145,10 @@ defaultGrid = ChartGrid {  xAxisStep = 20,
                            xOffset = Nothing,
                            yOffset = Nothing }
 
+
+defaultShapeMarker =  ShapeMarker { shapeType = ShapeCircle,
+                                    shapeColor = "0000DD",
+                                    shapeDataSetIdx = 0,
+                                    shapeDataPoint = DataPointEvery,
+                                    shapeSize = 5,
+                                    shapePriority = 0 }
