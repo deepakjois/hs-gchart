@@ -261,6 +261,8 @@ legend labels = Legend labels Nothing
 
 legendWithPosition labels position = Legend labels (Just position)
 
+makeAxis = defaultAxis
+
 makeGrid = defaultGrid
 
 -- helper functions
@@ -300,5 +302,5 @@ debugChart = getUrl $ do setChartSize 640 400
                          addColor "00FF00"
                          addFill $ solid "DD00DD" Background
                          addLegend $ legendWithPosition ["t1","t2"] VBottom
-                         addAxis $ defaultAxis { axisStyle = Just defaultAxisStyle }
+                         addAxis $ makeAxis { axisStyle = Just defaultAxisStyle }
                          addGrid $ makeGrid { lineSegmentLength = Just 5 }
