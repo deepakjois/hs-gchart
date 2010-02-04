@@ -67,6 +67,13 @@ data Axis = Axis { axisType :: AxisType,
 type ChartAxes = [Axis]
 
 
+data ChartGrid = ChartGrid { xAxisStep :: Float,
+                             yAxisStep :: Float,
+                             lineSegmentLength :: Maybe Float,
+                             blankSegmentLength :: Maybe Float,
+                             xOffset :: Maybe Float,
+                             yOffset :: Maybe Float } deriving Show
+
 -- chart
 data Chart = Chart { chartSize   :: ChartSize,
                      chartType   :: ChartType,
@@ -75,8 +82,8 @@ data Chart = Chart { chartSize   :: ChartSize,
                      chartColors :: Maybe ChartColors,
                      chartFills  :: Maybe ChartFills,
                      chartLegend :: Maybe ChartLegend,
-                     chartAxes   :: Maybe ChartAxes }  deriving Show
-
+                     chartAxes   :: Maybe ChartAxes,
+                     chartGrid   :: Maybe ChartGrid } deriving Show
 
 -- Monad
 type ChartM a = State Chart a
@@ -96,7 +103,8 @@ defaultChart = Chart { chartSize  = Size 320 200,
                        chartColors = Nothing,
                        chartFills = Nothing,
                        chartLegend = Nothing,
-                       chartAxes = Nothing }
+                       chartAxes = Nothing,
+                       chartGrid = Nothing }
 
 
 defaultAxis = Axis { axisType = AxisBottom,
@@ -111,3 +119,11 @@ defaultAxisStyle = Style { axisColor = "0000DD",
                            axisStyleAlign = Nothing,
                            axisDrawingControl = Nothing,
                            tickMarkColor = Nothing }
+
+defaultGrid = ChartGrid {  xAxisStep = 20,
+                           yAxisStep = 20,
+                           lineSegmentLength = Nothing,
+                           blankSegmentLength = Nothing,
+                           xOffset = Nothing,
+                           yOffset = Nothing }
+

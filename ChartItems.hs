@@ -197,6 +197,17 @@ strAxesStyles = convertFieldToString strAxisStyle axisStyle
 encodeAxesStyles = encodeFieldToParams "chxs" . strAxesStyles
 
 
+-- GRID
+instance ChartItem ChartGrid where
+    set grid = updateChart $ \chart -> chart { chartGrid = Just grid }
+
+    encode grid = asList ("chg", encodeGrid grid) where
+                  encodeGrid (ChartGrid a b c d e f)= intercalate "," $ catMaybes [Just (show a),
+                                                                                   Just (show b),
+                                                                                   liftM show c,
+                                                                                   liftM show d,
+                                                                                   liftM show e,
+                                                                                   liftM show f]
 
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
@@ -204,13 +215,14 @@ encodeMaybe Nothing = [("","")]
 encodeMaybe (Just x)  = encode x
 
 getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
-                                                         encode $ chartSize chart,
-                                                         encode $ chartData chart,
-                                                         encodeMaybe $ chartTitle  chart,
-                                                         encodeMaybe $ chartColors chart,
-                                                         encodeMaybe $ chartFills  chart,
-                                                         encodeMaybe $ chartLegend chart,
-                                                         encodeMaybe $ chartAxes   chart]
+                                                 encode $ chartSize chart,
+                                                 encode $ chartData chart,
+                                                 encodeMaybe $ chartTitle  chart,
+                                                 encodeMaybe $ chartColors chart,
+                                                 encodeMaybe $ chartFills  chart,
+                                                 encodeMaybe $ chartLegend chart,
+                                                 encodeMaybe $ chartAxes   chart,
+                                                 encodeMaybe $ chartGrid   chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -249,6 +261,8 @@ legend labels = Legend labels Nothing
 
 legendWithPosition labels position = Legend labels (Just position)
 
+makeGrid = defaultGrid
+
 -- helper functions
 
 setChartSize w h = set (Size w h)
@@ -269,6 +283,8 @@ addLegend = set
 
 addAxis = addAxisToChart
 
+addGrid = set
+
 -- API Functions
 
 getChartData m = execState m defaultChart
@@ -285,3 +301,4 @@ debugChart = getUrl $ do setChartSize 640 400
                          addFill $ solid "DD00DD" Background
                          addLegend $ legendWithPosition ["t1","t2"] VBottom
                          addAxis $ defaultAxis { axisStyle = Just defaultAxisStyle }
+                         addGrid $ makeGrid { lineSegmentLength = Just 5 }
