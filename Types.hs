@@ -38,8 +38,7 @@ data Fill = Fill FillKind FillType deriving Show
 type ChartFills = [Fill]
 
 -- legend
--- FIXME change it to not clash with Prelude.Left and Prelude.Right
-data LegendPosition = Bottom | Top | VBottom | VTop | Right | Left deriving Show
+data LegendPosition = LegendBottom | LegendTop | LegendVBottom | LegendVTop | LegendRight | LegendLeft deriving Show
 data ChartLegend = Legend [String] (Maybe LegendPosition) deriving Show
 
 

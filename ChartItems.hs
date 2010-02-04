@@ -7,7 +7,7 @@ import Data.Maybe
 import Data.Char (chr, ord)
 import Numeric (showHex)
 import Types
-import Prelude hiding (Right, Left)
+
 -- Setting/Encoding Chart Data
 
 updateChart u = do chart <- get
@@ -111,12 +111,12 @@ instance ChartItem ChartLegend where
                                encodeTitle = ("chdl", intercalate "|" labels)
                                encodePosition Nothing = []
                                encodePosition (Just p) = let pos = case p of
-                                                                    Bottom  -> "b"
-                                                                    Top     -> "t"
-                                                                    VBottom -> "bv"
-                                                                    VTop    -> "tv"
-                                                                    Right   -> "r"
-                                                                    Left    -> "l"
+                                                                    LegendBottom  -> "b"
+                                                                    LegendTop     -> "t"
+                                                                    LegendVBottom -> "bv"
+                                                                    LegendVTop    -> "tv"
+                                                                    LegendRight   -> "r"
+                                                                    LegendLeft    -> "l"
                                                          in  asList ("chdlp",pos)
 
 -- AXIS
@@ -301,6 +301,6 @@ debugChart = getUrl $ do setChartSize 640 400
                          addColor "FF0000"
                          addColor "00FF00"
                          addFill $ solid "DD00DD" Background
-                         addLegend $ legendWithPosition ["t1","t2"] VBottom
+                         addLegend $ legendWithPosition ["t1","t2"] LegendVBottom
                          addAxis $ makeAxis { axisStyle = Just defaultAxisStyle }
                          addGrid $ makeGrid { lineSegmentLength = Just 5 }
