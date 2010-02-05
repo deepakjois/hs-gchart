@@ -6,9 +6,20 @@ import Control.Monad.State
 data ChartSize = Size Int Int deriving Show
 
 -- type
-data ChartType = Line |
-                 Sparklines |
-                 LineXY deriving Show
+data ChartType = Line                 |
+                 Sparklines           |
+                 LineXY               |
+                 BarHorizontalStacked |
+                 BarVerticalStacked   |
+                 BarHorizontalGrouped |
+                 BarVerticalGrouped   |
+                 Pie                  |
+                 Pie3D                |
+                 PieConcentric        |
+                 Venn                 |
+                 ScatterPlot          |
+                 Radar                |
+                 GoogleOMeter deriving Show
 
 --title
 type ChartTitle = String
@@ -19,7 +30,7 @@ data ChartData = D [[Int]] deriving Show
 -- colors
 type Color = String
 
-type ChartColors = [Color]
+data ChartColors = ChartColors [Color] deriving Show
 
 
 -- fills
@@ -90,6 +101,10 @@ data ChartMarker =  ShapeMarker { shapeType  :: ShapeType,
                                   rangeSpan :: (Float,Float) } deriving Show
 
 type ChartMarkers = [ChartMarker]
+
+-- labels
+data ChartLabels = ChartLabels [String] deriving Show
+
 -- chart
 data Chart = Chart { chartSize    :: ChartSize,
                      chartType    :: ChartType,
@@ -100,7 +115,8 @@ data Chart = Chart { chartSize    :: ChartSize,
                      chartLegend  :: Maybe ChartLegend,
                      chartAxes    :: Maybe ChartAxes,
                      chartGrid    :: Maybe ChartGrid,
-                     chartMarkers :: Maybe ChartMarkers } deriving Show
+                     chartMarkers :: Maybe ChartMarkers,
+                     chartLabels  :: Maybe ChartLabels } deriving Show
 
 -- Monad
 type ChartM a = State Chart a
@@ -122,7 +138,8 @@ defaultChart = Chart { chartSize  = Size 320 200,
                        chartLegend = Nothing,
                        chartAxes = Nothing,
                        chartGrid = Nothing,
-                       chartMarkers = Nothing }
+                       chartMarkers = Nothing,
+                       chartLabels = Nothing }
 
 
 defaultAxis = Axis { axisType = AxisBottom,

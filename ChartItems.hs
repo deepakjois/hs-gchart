@@ -30,15 +30,26 @@ instance ChartItem ChartType where
 
     encode cType =  asList ("cht",t)
                     where t = case cType of
-                                    Line       -> "lc"
-                                    LineXY     -> "lxy"
-                                    Sparklines -> "ls"
+                                    Line                 -> "lc"
+                                    LineXY               -> "lxy"
+                                    Sparklines           -> "ls"
+                                    Pie                  -> "p"
+                                    Pie3D                -> "p3"
+                                    PieConcentric        -> "pc"
+                                    BarHorizontalStacked -> "bhs"
+                                    BarVerticalStacked   -> "bvs"
+                                    BarHorizontalGrouped -> "bhg"
+                                    BarVerticalGrouped   -> "bvg"
+                                    Venn                 -> "v"
+                                    ScatterPlot          -> "s"
+                                    Radar                -> "r"
+                                    GoogleOMeter         -> "gom"
 
 -- title
 instance ChartItem ChartTitle where
     set title = updateChart $ \chart -> chart { chartTitle = Just title }
 
-    encode title = asList ("chl", title)
+    encode title = asList ("chtt", title)
 
 
 -- data
@@ -61,13 +72,13 @@ addDataToChart d = do c <- get
 instance ChartItem ChartColors where
     set colors = updateChart $ \chart -> chart { chartColors = Just colors }
 
-    encode colors = asList ("chco", intercalate "," colors)
+    encode (ChartColors colors) = asList ("chco", intercalate "," colors)
 
 
 
 addColorToChart color = do chart <- get
-                           let old = fromMaybe [] $ chartColors chart
-                               new = old ++ [color]
+                           let (ChartColors old) = fromMaybe (ChartColors []) $ chartColors chart
+                               new = ChartColors $ old ++ [color]
                            set new
 
 -- fill
@@ -209,6 +220,13 @@ instance ChartItem ChartGrid where
                                                                                    liftM show e,
                                                                                    liftM show f]
 
+-- LABELS (Pie Chart, Google-O-Meter
+instance ChartItem ChartLabels where
+    set labels = updateChart $ \chart -> chart { chartLabels = Just labels }
+
+    encode (ChartLabels labels) = asList ("chl", intercalate "|" labels)
+
+
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
 encodeMaybe Nothing = [("","")]
@@ -222,7 +240,8 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartFills  chart,
                                                  encodeMaybe $ chartLegend chart,
                                                  encodeMaybe $ chartAxes   chart,
-                                                 encodeMaybe $ chartGrid   chart]
+                                                 encodeMaybe $ chartGrid   chart,
+                                                 encodeMaybe $ chartLabels chart]
 
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
@@ -275,7 +294,7 @@ setChartTitle = set
 
 addChartData = addDataToChart
 
-addColors = set
+addColors = set . ChartColors
 
 addColor  = addColorToChart
 
@@ -287,20 +306,28 @@ addAxis = addAxisToChart
 
 addGrid = set
 
+addLabels = set . ChartLabels
+
 -- API Functions
 
 getChartData m = execState m defaultChart
 
 getUrl =  convertToUrl . getChartData
 
-debugChart = getUrl $ do setChartSize 640 400
-                         setChartType Line
-                         setChartTitle "Test"
-                         addChartData  [1,2,3,4,5]
-                         addChartData  [3,4,5,6,7]
-                         addColor "FF0000"
-                         addColor "00FF00"
-                         addFill $ solid "DD00DD" Background
-                         addLegend $ legendWithPosition ["t1","t2"] LegendVBottom
-                         addAxis $ makeAxis { axisStyle = Just defaultAxisStyle }
-                         addGrid $ makeGrid { lineSegmentLength = Just 5 }
+debugPieChart = getUrl $ do setChartSize 640 400
+                            setChartType Pie
+                            setChartTitle "Test"
+                            addChartData  [1,2,3,4,5]
+                            addColor "FF0000"
+                            addLegend $ legend ["t1","t2", "t3","t4","t5"]
+                            addLabels $ ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
+
+debugBarChart = getUrl $ do setChartSize 640 400
+                            setChartType BarVerticalGrouped
+                            addChartData  [1,2,3,4,5]
+                            addChartData  [3,4,5,6,7]
+                            addChartData  [4,5,6,7,8]
+                            addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
+                            addColors ["FF0000","00FF00","0000FF"]
+                            addLegend $ legend ["Set 1", "Set 2", "Set 3"]
+
