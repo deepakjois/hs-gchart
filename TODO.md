@@ -1,6 +1,5 @@
 FEATURES
 ========
-
 * Support for
   - Chart Title, Font Size and Color (chts)
   - Adding custom shapes
@@ -15,12 +14,13 @@ FEATURES
   - Pie Chart Orientation
   - Bar Chart Fit
   - Radar with fill area
+  - Text Encoding With Data Scaling
 * package as cabal
 * documentation
 
 CODE IMPROVEMENTS
 =================
-* A better function to show float
+* A better function to show float values when they are integers
 * Basic Error Handling when attempting to use items not allowed in a chart type
 * Add helpers for contructing datatypes like Fill, Markers etc
 * Find ways to remove boilerplate from ChartItem class instances

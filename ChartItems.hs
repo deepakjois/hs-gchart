@@ -63,15 +63,21 @@ instance ChartItem ChartData where
                               encodeData (Extended d) = encodeExtended d
 
 
-addDataWithEncoding :: [Float] -> ChartData -> ChartData
-addDataWithEncoding d (Simple old) = Simple $ old ++ [map truncate d]
-addDataWithEncoding d (Text old) = Text $ old ++ [d]
-addDataWithEncoding d (Extended old) = Extended $ old ++ [map truncate d]
+class Num a => ChartDataEncodable a where
+    addEncodedChartData :: [a] -> ChartData -> ChartData
+
+instance ChartDataEncodable Int where
+    addEncodedChartData d cd@(Simple old) = Simple $ old ++ [d]
+    addEncodedChartData d cd@(Extended old) = Extended $ old ++ [d]
+    addEncodedChartData d _ = error "Invalid type for specified encoding. Use float data"
+
+instance ChartDataEncodable Float where
+    addEncodedChartData d cd@(Text old) = Text $ old ++ [d]
+    addEncodedChartData d _             = error "Invalid type for specified encoding. Use int data"
 
 addDataToChart d = do c <- get
                       let old = chartData c
-                      set $ addDataWithEncoding d old
-
+                      set $ addEncodedChartData d old
 
 -- color
 
@@ -269,8 +275,10 @@ encodeText datas = "t:" ++ intercalate "|" (map encData datas) where
     encData = intercalate "," . map encDatum
     encDatum i | i >= 0 && i <= 100 = showDecimal i
                | otherwise          = "-1"
-    showDecimal :: RealFrac a => a -> String
-    showDecimal i = show (fromIntegral (round (i * 10.0)) / 10.0)
+    showDecimal :: Float -> String
+    showDecimal i | ((makeFloat (truncate i)) - i) == 0  = show $ truncate i
+                  | otherwise                            = show (fromIntegral (round (i * 10.0)) / 10.0)
+    makeFloat i = fromIntegral i :: Float
 
 encodeExtended datas = "e:" ++ intercalate "," (map (concatMap encDatum) datas) where
     encDatum i | i >= 0 && i < 4096 = let (a, b) = i `quotRem` 64 in
@@ -349,17 +357,17 @@ getUrl =  convertToUrl . getChartData
 debugPieChart = getUrl $ do setChartSize 640 400
                             setChartType Pie
                             setChartTitle "Test"
-                            addChartData  [1,2,3,4,5]
+                            addChartData  ([1,2,3,4,5]::[Int])
                             addColor "FF0000"
                             addLegend $ legend ["t1","t2", "t3","t4","t5"]
                             addLabels $ ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
 debugBarChart = getUrl $ do setChartSize 640 400
                             setChartType BarVerticalGrouped
-                            setDataEncoding extended
-                            addChartData  [100,200,300,400,500]
-                            addChartData  [3,4,5,6,7]
-                            addChartData  [4,5,6,7,8]
+                            setDataEncoding text
+                            addChartData  ([100,200,300,400,500]::[Float])
+                            addChartData  ([3,4,5,6,7]::[Float])
+                            addChartData  ([4.0,5.0,6.0,7.0,8]::[Float])
                             addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
                             addColors ["FF0000","00FF00","0000FF"]
                             addLegend $ legend ["Set 1", "Set 2", "Set 3"]

@@ -1,1 +1,0 @@
-data ChartMarker = ShapeMarker { markerShape :: Int } | RangeMarker { markerRange :: (Int,Int)}
