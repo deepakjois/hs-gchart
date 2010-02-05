@@ -1,12 +1,21 @@
 {-# LANGUAGE TypeSynonymInstances, NoMonomorphismRestriction #-}
-module Graphics.GChart.ChartItems where
+module Graphics.GChart.ChartItems (
+  ChartM, 
+  ChartItem,set,
+  getChartDataFromChartM,
+  addDataToChart,
+  addColorToChart,
+  addFillToChart,
+  addAxisToChart,
+  getParams
+) where
+
+import Graphics.GChart.Types
+import Graphics.GChart.DataEncoding
 
 import Control.Monad.State
 import Data.List
 import Data.Maybe
-import Data.Char (chr, ord)
-import Numeric (showHex)
-import Graphics.GChart.Types
 
 -- Monad
 type ChartM a = State Chart a
@@ -26,6 +35,7 @@ updateChart u = do chart <- get
 
 asList a = [a]
 
+getChartDataFromChartM m = execState m defaultChart
 
 -- size
 instance ChartItem ChartSize where
@@ -250,6 +260,8 @@ instance ChartItem ChartLabels where
     encode (ChartLabels labels) = asList ("chl", intercalate "|" labels)
 
 
+
+
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
 encodeMaybe Nothing = [("","")]
@@ -265,121 +277,4 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartAxes   chart,
                                                  encodeMaybe $ chartGrid   chart,
                                                  encodeMaybe $ chartLabels chart]
-
-convertToUrl chart = baseURL ++ intercalate "&" urlparams where
-    baseURL = "http://chart.apis.google.com/chart?"
-    urlparams = [urlEnc a ++ "=" ++ urlEnc b | (a,b) <- getParams chart]
-
-
--- Data Encodings
-
-encodeSimple :: [[Int]] -> String
-encodeSimple datas = "s:" ++ intercalate "," (map (map enc) datas) where
-    enc :: Int -> Char
-    enc i | i >= 0  && i <= 25 = chr (ord 'A' + i)
-          | i >= 26 && i <= 51 = chr (ord 'a' + (i - 26))
-          | i >= 52 && i <= 61 = chr (ord '0' + (i - 52))
-          | otherwise          = '_'
-
-
-encodeText datas = "t:" ++ intercalate "|" (map encData datas) where
-    encData = intercalate "," . map encDatum
-    encDatum i | i >= 0 && i <= 100 = showDecimal i
-               | otherwise          = "-1"
-    showDecimal :: Float -> String
-    showDecimal i | ((makeFloat (truncate i)) - i) == 0  = show $ truncate i
-                  | otherwise                            = show (fromIntegral (round (i * 10.0)) / 10.0)
-    makeFloat i = fromIntegral i :: Float
-
-encodeExtended datas = "e:" ++ intercalate "," (map (concatMap encDatum) datas) where
-    encDatum i | i >= 0 && i < 4096 = let (a, b) = i `quotRem` 64 in
-                                      [encChar a, encChar b]
-               | otherwise          = "__"
-    encChar i | i >= 0  && i <= 25 = chr (ord 'A' + i)
-              | i >= 26 && i <= 51 = chr (ord 'a' + (i - 26))
-              | i >= 52 && i <= 61 = chr (ord '0' + (i - 52))
-              | i == 62            = '-'
-              | i == 63            = '.'
-
-
--- | URL-encode a string.
-urlEnc str = concatMap enc str where
-  enc c | c >= 'A' && c <= 'Z' = [c]
-        | c >= 'a' && c <= 'z' = [c]
-        | c >= '0' && c <= '9' = [c]
-        | c `elem` safe        = [c]
-        | c == ' '             = "+"
-        | otherwise  = '%': showHex (ord c) ""
-  -- Argh, different resources differ on which characters need escaping.
-  -- This is likely wrong.
-  safe = "$-_.!*'(),|:"
-
-
--- smart constructors
-
-solid = Fill . Solid
-
-legend labels = Legend labels Nothing
-
-legendWithPosition labels position = Legend labels (Just position)
-
-makeAxis = defaultAxis
-
-makeGrid = defaultGrid
-
-simple = Simple []
-
-text = Text []
-
-extended = Extended []
-
--- helper functions
-
-setChartSize w h = set (Size w h)
-
-setChartType = set
-
-setChartTitle = set
-
-setDataEncoding = set
-
-addChartData = addDataToChart
-
-addColors = set . ChartColors
-
-addColor  = addColorToChart
-
-addFill = addFillToChart
-
-addLegend = set
-
-addAxis = addAxisToChart
-
-addGrid = set
-
-addLabels = set . ChartLabels
-
--- API Functions
-
-getChartData m = execState m defaultChart
-
-getUrl =  convertToUrl . getChartData
-
-debugPieChart = getUrl $ do setChartSize 640 400
-                            setChartType Pie
-                            setChartTitle "Test"
-                            addChartData  ([1,2,3,4,5]::[Int])
-                            addColor "FF0000"
-                            addLegend $ legend ["t1","t2", "t3","t4","t5"]
-                            addLabels $ ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
-
-debugBarChart = getUrl $ do setChartSize 640 400
-                            setChartType BarVerticalGrouped
-                            setDataEncoding text
-                            addChartData  ([100,200,300,400,500]::[Float])
-                            addChartData  ([3,4,5,6,7]::[Float])
-                            addChartData  ([4.0,5.0,6.0,7.0,8]::[Float])
-                            addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
-                            addColors ["FF0000","00FF00","0000FF"]
-                            addLegend $ legend ["Set 1", "Set 2", "Set 3"]
 
