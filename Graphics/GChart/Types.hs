@@ -1,4 +1,4 @@
-module Types where
+module Graphics.GChart.Types where
 
 import Control.Monad.State
 

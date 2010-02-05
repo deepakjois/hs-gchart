@@ -1,12 +1,12 @@
 {-# LANGUAGE TypeSynonymInstances, NoMonomorphismRestriction #-}
-module ChartItems where
+module Graphics.GChart.ChartItems where
 
 import Control.Monad.State
 import Data.List
 import Data.Maybe
 import Data.Char (chr, ord)
 import Numeric (showHex)
-import Types
+import Graphics.GChart.Types
 
 -- Setting/Encoding Chart Data
 
