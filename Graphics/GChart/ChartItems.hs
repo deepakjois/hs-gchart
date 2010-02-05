@@ -8,6 +8,17 @@ import Data.Char (chr, ord)
 import Numeric (showHex)
 import Graphics.GChart.Types
 
+-- Monad
+type ChartM a = State Chart a
+
+-- Typeclass abstracting all the fields in a chart
+class ChartItem c where
+  -- set the field
+  set :: c -> ChartM ()
+  -- encode the field into string params
+  encode :: c -> [(String,String)]
+
+
 -- Setting/Encoding Chart Data
 
 updateChart u = do chart <- get
