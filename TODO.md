@@ -2,9 +2,9 @@ FEATURES
 ========
 
 * Support for
-  - Markers, Range and Shape
-  - Pie Chart and Google-o-Meter labels
-  - More chart types
+  - Chart Title, Font Size and Color (chts)
+  - Adding custom shapes
+  - Markers: Range, Shape and Financial
   - Line Styles
   - Fill Area
   - Data Point Labels
@@ -12,12 +12,15 @@ FEATURES
   - Bar Width and Spacing
   - Bar Zero Line
   - Financial Markers
+  - Pie Chart Orientation
+  - Bar Chart Fit
+  - Radar with fill area
 * package as cabal
 * documentation
 
 CODE IMPROVEMENTS
 =================
-
+* A better function to show float
 * Basic Error Handling when attempting to use items not allowed in a chart type
 * Add helpers for contructing datatypes like Fill, Markers etc
 * Find ways to remove boilerplate from ChartItem class instances
