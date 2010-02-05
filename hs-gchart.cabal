@@ -14,5 +14,5 @@ data-files: README.md
 Library
   Build-Depends: base >= 3 && < 5, mtl
   hs-source-dirs: .
-  other-modules: Graphics.GChart.Types, Graphics.GChart.ChartItems
+  other-modules: Graphics.GChart,Graphics.GChart.Types, Graphics.GChart.ChartItems, Graphics.GChart.DataEncoding
 

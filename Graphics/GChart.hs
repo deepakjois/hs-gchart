@@ -75,7 +75,7 @@ addGrid = set
 addLabels = set . ChartLabels
 
 -- API Functions
-
+getChartData :: ChartM () -> Chart
 getChartData = getChartDataFromChartM
 
 getUrl =  convertToUrl . getChartData

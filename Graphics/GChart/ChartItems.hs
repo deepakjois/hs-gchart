@@ -1,7 +1,8 @@
 {-# LANGUAGE TypeSynonymInstances, NoMonomorphismRestriction #-}
+{-# OPTIONS_HADDOCK hide #-}
 module Graphics.GChart.ChartItems (
-  ChartM, 
-  ChartItem,set,
+  ChartM,
+  ChartItem, set,
   getChartDataFromChartM,
   addDataToChart,
   addColorToChart,
