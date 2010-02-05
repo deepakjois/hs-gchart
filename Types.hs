@@ -25,7 +25,8 @@ data ChartType = Line                 |
 type ChartTitle = String
 
 -- data
-data ChartData = D [[Int]] deriving Show
+
+data ChartData = Simple [[Int]] | Text [[Float]] | Extended [[Int]] deriving Show
 
 -- colors
 type Color = String
@@ -131,7 +132,7 @@ class ChartItem c where
 -- Default value of a chart
 defaultChart = Chart { chartSize  = Size 320 200,
                        chartType  = Line,
-                       chartData  = D [],
+                       chartData  = Simple [],
                        chartTitle = Nothing,
                        chartColors = Nothing,
                        chartFills = Nothing,

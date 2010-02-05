@@ -57,14 +57,20 @@ instance ChartItem ChartTitle where
 instance ChartItem ChartData where
     set cData = updateChart $ \chart -> chart { chartData = cData }
 
-    encode (D cData) = asList ("chd", encodeSimple cData)
+    encode datas = asList ("chd", encodeData datas)
+                        where encodeData (Simple d)   = encodeSimple d
+                              encodeData (Text d)     = encodeText d
+                              encodeData (Extended d) = encodeExtended d
 
 
-addDataToChart :: [Int] -> ChartM ()
+addDataWithEncoding :: [Float] -> ChartData -> ChartData
+addDataWithEncoding d (Simple old) = Simple $ old ++ [map truncate d]
+addDataWithEncoding d (Text old) = Text $ old ++ [d]
+addDataWithEncoding d (Extended old) = Extended $ old ++ [map truncate d]
+
 addDataToChart d = do c <- get
-                      let D old = chartData c
-                          new = D (old ++ [d])
-                      set new
+                      let old = chartData c
+                      set $ addDataWithEncoding d old
 
 
 -- color
@@ -259,6 +265,24 @@ encodeSimple datas = "s:" ++ intercalate "," (map (map enc) datas) where
           | otherwise          = '_'
 
 
+encodeText datas = "t:" ++ intercalate "|" (map encData datas) where
+    encData = intercalate "," . map encDatum
+    encDatum i | i >= 0 && i <= 100 = showDecimal i
+               | otherwise          = "-1"
+    showDecimal :: RealFrac a => a -> String
+    showDecimal i = show (fromIntegral (round (i * 10.0)) / 10.0)
+
+encodeExtended datas = "e:" ++ intercalate "," (map (concatMap encDatum) datas) where
+    encDatum i | i >= 0 && i < 4096 = let (a, b) = i `quotRem` 64 in
+                                      [encChar a, encChar b]
+               | otherwise          = "__"
+    encChar i | i >= 0  && i <= 25 = chr (ord 'A' + i)
+              | i >= 26 && i <= 51 = chr (ord 'a' + (i - 26))
+              | i >= 52 && i <= 61 = chr (ord '0' + (i - 52))
+              | i == 62            = '-'
+              | i == 63            = '.'
+
+
 -- | URL-encode a string.
 urlEnc str = concatMap enc str where
   enc c | c >= 'A' && c <= 'Z' = [c]
@@ -284,6 +308,12 @@ makeAxis = defaultAxis
 
 makeGrid = defaultGrid
 
+simple = Simple []
+
+text = Text []
+
+extended = Extended []
+
 -- helper functions
 
 setChartSize w h = set (Size w h)
@@ -291,6 +321,8 @@ setChartSize w h = set (Size w h)
 setChartType = set
 
 setChartTitle = set
+
+setDataEncoding = set
 
 addChartData = addDataToChart
 
@@ -324,7 +356,8 @@ debugPieChart = getUrl $ do setChartSize 640 400
 
 debugBarChart = getUrl $ do setChartSize 640 400
                             setChartType BarVerticalGrouped
-                            addChartData  [1,2,3,4,5]
+                            setDataEncoding extended
+                            addChartData  [100,200,300,400,500]
                             addChartData  [3,4,5,6,7]
                             addChartData  [4,5,6,7,8]
                             addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
