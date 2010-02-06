@@ -1,8 +1,8 @@
 FEATURES
 ========
-* add more helper/constructor methods
 * add examples
 * Write a readme
+* add more helper/constructor methods
 * Support for missing features (see Types.hs docs)
 
 CODE IMPROVEMENTS

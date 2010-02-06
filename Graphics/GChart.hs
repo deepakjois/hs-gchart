@@ -22,7 +22,7 @@ module Graphics.GChart (
 Use these functions to set the parameters of the chart.
 
 These functions must be called inside a @do@ block, which can then be passed
-onto 'getUrl' or 'getChartData'.  For e.g, here is a simple pie chart function
+onto 'getChartUrl' or 'getChartData'.  For e.g, here is a simple pie chart function
 
 @
 generatePieChart = getChartUrl $ do setChartSize 640 400
