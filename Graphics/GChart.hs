@@ -35,7 +35,7 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
 @
 
 -} 
-  setChartSize, setChartType, setDataEncoding, setChartTitle,addChartData, setColors, addColor, addFill,
+  setChartSize, setChartType, setDataEncoding, setChartTitle,addChartData, addChartDataXY, setColors, addColor, addFill,
   setLegend, addAxis, setGrid, setLabels,
   -- * Retrieving Chart data
   getChartData, getChartUrl, convertToUrl,
@@ -140,6 +140,13 @@ setDataEncoding = set
 -}
 addChartData :: ChartDataEncodable a => [a] -> ChartM ()
 addChartData = addDataToChart
+
+-- | Works like 'addChartData', but for XY datasets for line XY chart etc
+addChartDataXY :: ChartDataEncodable a => [(a,a)] -> ChartM ()
+addChartDataXY series = do addDataToChart xseries
+                           addDataToChart yseries
+                        where xseries = map fst series
+                              yseries = map snd series
 
 -- | Pass a list of colors corresponding to the datasets in the chart
 setColors :: [Color] -> ChartM ()
