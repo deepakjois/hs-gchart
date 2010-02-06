@@ -4,7 +4,7 @@
 Import this module to generate charts using the Google Chart API.
 
 For more examples, refer to @Examples.hs@ in the source tarball, or download it
-directly from Github : <http://github.com/hs-gchart/>.
+directly from Github : <http://github.com/deepakjois/hs-gchart/blob/master/examples/Examples.hs>.
 
 For documentation regarding the full data model, refer to 
 "Graphics.GChart.Types".
