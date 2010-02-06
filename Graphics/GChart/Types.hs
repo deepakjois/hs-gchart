@@ -116,30 +116,30 @@ type ChartTitle = String
 -- | consecutive data sets
 -- | <http://code.google.com/apis/chart/formats.html>
 data ChartData
-  = Simple [[Int]]   -- ^ Simple - lets you specify integer values from 0—61, inclusive
-  | Text [[Float]]   -- ^ Text - supports floating point numbers from 0—100, inclusive
-  | Extended [[Int]] -- ^ Extended - lets you specify integer values from 0—4095, inclusive
+  = Simple [[Int]]   -- ^ lets you specify integer values from 0-61, inclusive
+  | Text [[Float]]   -- ^ supports floating point numbers from 0-100, inclusive
+  | Extended [[Int]] -- ^ lets you specify integer values from 0-4095, inclusive
     deriving Show
 
 -- | Color data specified as a hex string
 type Color = String
 
 -- | Chart colors specified as a list of 'Color' values for each data point.
--- | <http://code.google.com/apis/chart/colors.html#chart_colors>
+-- <http://code.google.com/apis/chart/colors.html#chart_colors>
 data ChartColors = ChartColors [Color] deriving Show
 
 
 -- | Specifies the angle of the gradient between 0 (horizontal) and 90
--- | (vertical). Applicable to 'LinearGradient' and 'LinearStripes'
+-- (vertical). Applicable to 'LinearGradient' and 'LinearStripes'
 type Angle = Float
 
 -- | Specifies at what point the color is pure. In this parameter, 0 specifies
--- | the right-most chart position and 1 specifies the left-most chart
--- | position. Applicable to 'LinearGradient'
+-- the right-most chart position and 1 specifies the left-most chart
+-- position. Applicable to 'LinearGradient'
 type Offset = Float
 
 -- | Width of the stripe. must be between 0 and 1, where 1 is the full width of
--- | the chart
+-- the chart
 type Width = Float
 
 -- | Specifies the kind of fill
@@ -173,11 +173,11 @@ data LegendPosition
       deriving Show
 
 -- | Specifies a chart legend
--- | <http://code.google.com/apis/chart/labels.html#chart_legend>
+-- <http://code.google.com/apis/chart/labels.html#chart_legend>
 data ChartLegend = Legend [String] (Maybe LegendPosition) deriving Show
 
 -- | Type of 'Axis'
--- | <http://code.google.com/apis/chart/labels.html#axis_type>
+-- <http://code.google.com/apis/chart/labels.html#axis_type>
 data AxisType
     = AxisBottom -- ^ Bottom x-axis
     | AxisTop    -- ^ Top x-axis
@@ -186,7 +186,7 @@ data AxisType
       deriving Show
 
 -- | 'Axis' Labels.
--- | <http://code.google.com/apis/chart/labels.html#axis_labels>
+-- <http://code.google.com/apis/chart/labels.html#axis_labels>
 type AxisLabel = String
 
 {-| 'Axis' Label Positions. <http://code.google.com/apis/chart/labels.html#axis_label_positions>
@@ -226,7 +226,7 @@ data DrawingControl
       deriving (Show,Eq)
 
 -- | Specify 'Axis' style
--- | <http://code.google.com/apis/chart/labels.html#axis_styles>
+-- <http://code.google.com/apis/chart/labels.html#axis_styles>
 data AxisStyle = Style { axisColor :: Color,
                          axisFontSize :: Maybe FontSize,
                          axisStyleAlign :: Maybe AxisStyleAlignment,
@@ -234,7 +234,7 @@ data AxisStyle = Style { axisColor :: Color,
                          tickMarkColor      :: Maybe Color } deriving (Show,Eq)
 
 -- | Specify an axis for chart.
--- | <http://code.google.com/apis/chart/labels.html#axis_styles>
+-- <http://code.google.com/apis/chart/labels.html#axis_styles>
 data Axis = Axis { axisType :: AxisType,
                    axisLabels :: Maybe [AxisLabel],
                    axisPositions :: Maybe [AxisPosition],
@@ -245,7 +245,7 @@ data Axis = Axis { axisType :: AxisType,
 type ChartAxes = [Axis]
 
 -- | Grid Lines for Chart
--- | <http://code.google.com/apis/chart/styles.html#grid>
+-- <http://code.google.com/apis/chart/styles.html#grid>
 data ChartGrid =
     ChartGrid {
       xAxisStep :: Float -- ^ x-axis step size (0-100)
@@ -278,7 +278,7 @@ type ChartMarkers = [ChartMarker]
 -}
 
 -- | Labels for Pie Chart and Google-o-meter.
--- | Specify a list with a single label for Google-o-meter
+-- Specify a list with a single label for Google-o-meter
 data ChartLabels = ChartLabels [String] deriving Show
 
 -- | Data type for the chart
