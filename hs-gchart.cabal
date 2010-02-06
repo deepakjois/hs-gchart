@@ -16,9 +16,9 @@ cabal-version: >= 1.6
 category: Graphics
 stability: experimental
 homepage: http://github.com/deepakjois/hs-gchart
-data-files: README.md, examples/Examples.hs
-tested-with: GHC==6.12.1
+data-files: README.md
 extra-source-files: examples/Examples.hs
+tested-with: GHC==6.12.1
 
 source-repository head
   type:     git
