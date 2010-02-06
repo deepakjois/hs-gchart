@@ -77,6 +77,9 @@ module Graphics.GChart.Types (
   -- ** Pie chart and Google-o-meter labels
   ChartLabels(..),
 
+  -- ** Chart Margins
+  ChartMargins(..),
+
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
        used as starting points to construct parameters when creating charts. -}
@@ -281,31 +284,49 @@ type ChartMarkers = [ChartMarker]
 -- Specify a list with a single label for Google-o-meter
 data ChartLabels = ChartLabels [String] deriving Show
 
+-- | Chart Margins. All margin values specified are the minimum margins around
+-- the plot area, in pixels.
+-- <http://code.google.com/apis/chart/styles.html#chart_margins>
+data ChartMargins =
+    ChartMargins {
+      leftMargin   :: Int                -- ^ Left margin around plot area
+    , rightMargin  :: Int                -- ^ Right margin around plot area
+    , topMargin    :: Int                -- ^ Top margin around plot area
+    , bottomMargin :: Int                -- ^ Bottom margin around plot area
+    , legendMargins  :: Maybe (Int,Int)  -- ^ Minimum width and height  of legend
+    } deriving Show
+
 -- | Data type for the chart
-data Chart = Chart { chartSize    :: ChartSize,
-                     chartType    :: ChartType,
-                     chartData    :: ChartData,
-                     chartTitle   :: Maybe ChartTitle,
-                     chartColors  :: Maybe ChartColors,
-                     chartFills   :: Maybe ChartFills,
-                     chartLegend  :: Maybe ChartLegend,
-                     chartAxes    :: Maybe ChartAxes,
-                     chartGrid    :: Maybe ChartGrid,
-                     -- chartMarkers :: Maybe ChartMarkers,
-                     chartLabels  :: Maybe ChartLabels } deriving Show
+data Chart =
+    Chart {
+      chartSize    :: ChartSize
+    , chartType    :: ChartType
+    , chartData    :: ChartData
+    , chartTitle   :: Maybe ChartTitle
+    , chartColors  :: Maybe ChartColors
+    , chartFills   :: Maybe ChartFills
+    , chartLegend  :: Maybe ChartLegend
+    , chartAxes    :: Maybe ChartAxes
+    , chartGrid    :: Maybe ChartGrid
+    , chartLabels  :: Maybe ChartLabels
+    , chartMargins :: Maybe ChartMargins
+    } deriving Show
+
 
 -- | Default value for a chart
-defaultChart = Chart { chartSize  = Size 320 200,
-                       chartType  = Line,
-                       chartData  = Simple [],
-                       chartTitle = Nothing,
-                       chartColors = Nothing,
-                       chartFills = Nothing,
-                       chartLegend = Nothing,
-                       chartAxes = Nothing,
-                       chartGrid = Nothing,
-                       -- chartMarkers = Nothing,
-                       chartLabels = Nothing }
+defaultChart =
+    Chart { chartSize  = Size 320 200,
+            chartType  = Line,
+            chartData  = Simple [],
+            chartTitle = Nothing,
+            chartColors = Nothing,
+            chartFills = Nothing,
+            chartLegend = Nothing,
+            chartAxes = Nothing,
+            chartGrid = Nothing,
+            chartLabels = Nothing,
+            chartMargins = Nothing
+          }
 
 -- | Default value for an axis
 defaultAxis = Axis { axisType = AxisBottom,

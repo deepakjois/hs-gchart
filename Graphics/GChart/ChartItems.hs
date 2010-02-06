@@ -261,7 +261,15 @@ instance ChartItem ChartLabels where
     encode (ChartLabels labels) = asList ("chl", intercalate "|" labels)
 
 
+-- CHART MARGINS
+instance ChartItem ChartMargins where
+    set margins = updateChart $ \chart -> chart { chartMargins = Just margins }
 
+    encode (ChartMargins a b c d e) = asList ("chma",intercalate "|" $ cm:[lm])
+        where cm  = intercalate ","  [show a, show b, show c, show d]
+              lm = case e of
+                     Just (x,y) -> show x ++ "," ++ show y
+                     _          -> ""
 
 -- URL Conversion
 -- FIXME : too much boilerplate. Can it be reduced?
@@ -271,11 +279,12 @@ encodeMaybe (Just x)  = encode x
 getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encode $ chartSize chart,
                                                  encode $ chartData chart,
-                                                 encodeMaybe $ chartTitle  chart,
-                                                 encodeMaybe $ chartColors chart,
-                                                 encodeMaybe $ chartFills  chart,
-                                                 encodeMaybe $ chartLegend chart,
-                                                 encodeMaybe $ chartAxes   chart,
-                                                 encodeMaybe $ chartGrid   chart,
-                                                 encodeMaybe $ chartLabels chart]
+                                                 encodeMaybe $ chartTitle   chart,
+                                                 encodeMaybe $ chartColors  chart,
+                                                 encodeMaybe $ chartFills   chart,
+                                                 encodeMaybe $ chartLegend  chart,
+                                                 encodeMaybe $ chartAxes    chart,
+                                                 encodeMaybe $ chartGrid    chart,
+                                                 encodeMaybe $ chartLabels  chart,
+                                                 encodeMaybe $ chartMargins chart]
 
