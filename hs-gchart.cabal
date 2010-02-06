@@ -1,19 +1,31 @@
-Cabal-Version: >= 1.2
-Name: hs-gchart
-Version: 0.1
-Synopsis: Haskell wrapper for the Google Chart API
-Description: Haskell wrapper for the Google Chart API
-Category: Graphics
-License: BSD3
-License-File: LICENSE
-Author: Deepak Jois
-Maintainer: deepak.jois@gmail.com
-Copyright: (c) 2010 Deepak Jois <deepak.jois@gmail.com>
-Homepage: http://github.com/deepakjois/hs-gchart
-Build-Type: Simple
+name: hs-gchart
+version: 0.1.1
+synopsis: Haskell wrapper for the Google Chart API
+license: BSD3
+license-file: LICENSE
+author: Deepak Jois
+maintainer: deepak.jois@gmail.com
+copyright: (c) 2010 Deepak Jois <deepak.jois@gmail.com>
+build-type: Simple
+cabal-version: >= 1.6
+category: Graphics
+stability: experimental
+homepage: http://github.com/deepakjois/hs-gchart
 data-files: README.md, examples/Examples.hs
-Library
-  Build-Depends: base >= 3 && < 5, mtl
-  hs-source-dirs: .
-  exposed-modules: Graphics.GChart,Graphics.GChart.Types
-  other-modules: Graphics.GChart.ChartItems, Graphics.GChart.DataEncoding
+tested-with: GHC==6.12.1
+
+library
+  build-depends: 
+     base >= 4 && < 5
+    ,mtl
+
+  exposed-modules: 
+     Graphics.GChart
+    ,Graphics.GChart.Types
+
+  other-modules:
+     Graphics.GChart.ChartItems
+    ,Graphics.GChart.DataEncoding
+
+
+

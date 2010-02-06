@@ -1,4 +1,3 @@
-{-# OPTIONS_HADDOCK hide #-}
 module Graphics.GChart.DataEncoding where
 
 import Graphics.GChart.Types

@@ -1,8 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances, NoMonomorphismRestriction #-}
-{-# OPTIONS_HADDOCK hide #-}
 module Graphics.GChart.ChartItems (
   ChartM,
-  ChartItem, set,
+  ChartItem(set),
   ChartDataEncodable,
   getChartDataFromChartM,
   addDataToChart,
@@ -22,7 +21,7 @@ import Data.Maybe
 -- Monad
 type ChartM a = State Chart a
 
--- Typeclass abstracting all the fields in a chart
+-- | Typeclass abstracting all the fields in a chart
 class ChartItem c where
   -- set the field
   set :: c -> ChartM ()
