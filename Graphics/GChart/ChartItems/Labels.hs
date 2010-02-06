@@ -6,13 +6,19 @@ import Graphics.GChart.ChartItems.Util
 
 import Data.List(intercalate)
 import Control.Monad(liftM)
-import Data.Maybe(catMaybes, fromJust)
+import Data.Maybe(catMaybes, fromJust, fromMaybe)
 
 -- Chart Title
 instance ChartItem ChartTitle where
     set title = updateChart $ \chart -> chart { chartTitle = Just title }
 
-    encode title = asList ("chtt", title)
+    encode title =  ("chtt", titleStr title) : if (chts /= "") then [("chts",chts)] else []
+                    where chts = encodeColorAndFontSize title
+
+encodeColorAndFontSize title =
+    intercalate "," $ catMaybes $ [titleColor $ title,
+                                   liftM show . titleFontSize  $ title]
+
 
 -- Chart Legend
 

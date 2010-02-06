@@ -19,8 +19,6 @@ Some parameters are not supported yet :
 
 - Financial markers <http://code.google.com/apis/chart/styles.html#financial_markers>
 
-- Line Styles <http://code.google.com/apis/chart/styles.html#line_styles>
-
 - Fill area <http://code.google.com/apis/chart/colors.html#fill_area_marker>
 
 - Bar width and spacing <http://code.google.com/apis/chart/styles.html#bar_width>
@@ -29,7 +27,7 @@ Some parameters are not supported yet :
 
 - Data point labels <http://code.google.com/apis/chart/labels.html#data_point_labels>
 
-- Chart title color and font customisation <http://code.google.com/apis/chart/labels.html#chart_title>
+- Line Styles <http://code.google.com/apis/chart/styles.html#line_styles>
 
 - Pie chart orientation <http://code.google.com/apis/chart/types.html#pie_charts>
 
@@ -65,7 +63,7 @@ module Graphics.GChart.Types (
   ChartFills, Fill(..), FillKind(..), FillType(..),
   Offset, Width, Angle,
   -- ** Chart Title
-  ChartTitle,
+  ChartTitle(..),
 
   -- ** Chart Legend
   ChartLegend(..), LegendPosition(..),
@@ -115,8 +113,12 @@ data ChartType
 
 -- | Title of the chart
 -- | <http://code.google.com/apis/chart/labels.html#chart_title>
-type ChartTitle = String
-
+data ChartTitle =
+    ChartTitle {
+      titleStr ::String               -- ^ Title
+    , titleColor :: Maybe Color       -- ^ Title Color
+    , titleFontSize :: Maybe FontSize -- ^ Title Font Size
+    } deriving Show
 
 -- | Chart data along with encoding. XY data for is encoded a pair of
 -- | consecutive data sets
@@ -214,7 +216,7 @@ optional interval value can be specified.
 -}
 data AxisRange = Range (Float,Float) (Maybe Float) deriving (Show,Eq)
 
--- | Font size in pixels. Applicable to 'AxisStyle'
+-- | Font size in pixels. Applicable to 'AxisStyle' and 'ChartTitle'
 type FontSize = Int
 
 -- | Alignment of 'Axis' labels. Applies to 'AxisStyle'
@@ -336,7 +338,7 @@ class ChartItem c where
 -- are then encoded correctly
 class Num a => ChartDataEncodable a where
     -- | Adds the array of numeric data to the existing chart data.
-    -- Throws a error if the data passed in doesnt match with the 
+    -- Throws a error if the data passed in doesnt match with the
     -- current data encoding format.
     addEncodedChartData :: [a] -> ChartData -> ChartData
 

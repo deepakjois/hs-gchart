@@ -6,18 +6,18 @@ Import this module to generate charts using the Google Chart API.
 For more examples, refer to @Examples.hs@ in the source tarball, or download it
 directly from Github : <http://github.com/deepakjois/hs-gchart/blob/master/examples/Examples.hs>.
 
-For documentation regarding the full data model, refer to 
+For documentation regarding the full data model, refer to
 "Graphics.GChart.Types".
 
 For more information about the Google Chart API, refer to
 <http://code.google.com/apis/chart/>
 
 -}
-module Graphics.GChart ( 
+module Graphics.GChart (
   module Graphics.GChart.Types,
 
   -- * Setting Chart Parameters
-  {-| 
+  {-|
 
 Use these functions to set the parameters of the chart.
 
@@ -34,13 +34,16 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
                                  setLabels $ [\"Test 1\", \"Test 2\", \"Test 3\", \"Test 4\", \"Test 5\"]
 @
 
--} 
-  setChartSize, setChartType, setDataEncoding, setChartTitle,addChartData, addChartDataXY, setColors, addColor, addFill,
-  setLegend, addAxis, setGrid, setLabels,
+-}
+
+  setChartSize, setChartType, setDataEncoding, setChartTitle,
+  setChartTitleWithColor, setChartTitleWithColorAndFontSize, addChartData,
+  addChartDataXY, setColors, addColor, addFill, setLegend, addAxis, setGrid,
+  setLabels,
   -- * Retrieving Chart data
   getChartData, getChartUrl, convertToUrl,
 
-  -- * Smart Constructors 
+  -- * Smart Constructors
   -- | These functions can be used to construct chart
   -- parameters more conveniently
   solid, legend, legendWithPosition, makeAxis, makeGrid,
@@ -120,7 +123,16 @@ setChartType = set
 
 -- | Set the chart title by passing a 'ChartTitle'
 setChartTitle :: String -> ChartM ()
-setChartTitle = set
+setChartTitle title = set $ ChartTitle title Nothing Nothing
+
+-- | Set the chart title with a color
+setChartTitleWithColor :: String -> Color -> ChartM()
+setChartTitleWithColor title color = set $ ChartTitle title (Just color) Nothing
+
+-- | Set the chart title with color and font size
+setChartTitleWithColorAndFontSize :: String -> Color -> FontSize -> ChartM ()
+setChartTitleWithColorAndFontSize title color fontsize =
+    set $ ChartTitle title (Just color) (Just fontsize)
 
 {-| Use it with 'simple', 'text' or 'extended' to specify the encoding. For e.g
 
@@ -134,7 +146,7 @@ encoding, and Float for text encoding.
 setDataEncoding :: ChartData -> ChartM ()
 setDataEncoding = set
 
-{-| Add data to chart. Make sure you have set the data encoding using 
+{-| Add data to chart. Make sure you have set the data encoding using
  'setDataEncoding' before calling this function, otherwise it may generate
  gibberish, or throw an error
 -}
@@ -187,7 +199,7 @@ setLabels = set . ChartLabels
 getChartData :: ChartM () -> Chart
 getChartData = getChartDataFromChartM
 
--- | Extracts the data out of the monad and returns a URL string for the chart 
+-- | Extracts the data out of the monad and returns a URL string for the chart
 getChartUrl :: ChartM () -> String
 getChartUrl =  convertToUrl . getChartData
 
@@ -199,7 +211,7 @@ convertToUrl chart = baseURL ++ intercalate "&" urlparams where
 
 debugPieChart = getChartUrl $ do setChartSize 640 400
                                  setChartType Pie
-                                 setChartTitle "Test"
+                                 setChartTitle"Test"
                                  addChartData  ([1,2,3,4,5]::[Int])
                                  addColor "FF0000"
                                  setLegend $ legend ["t1","t2", "t3","t4","t5"]
