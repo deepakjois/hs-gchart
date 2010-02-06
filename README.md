@@ -13,12 +13,12 @@ types and features.
 
 ## Installation
 
-Coming Soon
+    cabal install hs-gchart
 
 ## Getting Started
 
 These examples below are available in `examples/Examples.hs` in the source
-tarball. All examples are taking from [this article](http://24ways.org/2007/tracking-christmas-cheer-with-google-charts)
+tarball. All examples are taken from [this article](http://24ways.org/2007/tracking-christmas-cheer-with-google-charts)
 
 For examples 1 and 2, the following code is common
 
