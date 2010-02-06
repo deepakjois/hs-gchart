@@ -15,6 +15,14 @@ types and features.
 
     cabal install hs-gchart
 
+## Documentation
+
+* [API functions reference](http://deepak.jois.name/code/hs-gchart/Graphics-GChart.html)
+
+* [Haskell data types reference](http://deepak.jois.name/code/hs-gchart/Graphics-GChart-Types.html), along with pending features and chart types
+
+* [Google Chart API]
+
 ## Getting Started
 
 These examples below are available in `examples/Examples.hs` in the source
@@ -145,10 +153,3 @@ Generates the following chart
 
 ![Line Graph](http://chart.apis.google.com/chart?cht=lxy&chs=800x300&chd=t:0,16.7,23.3,33.3,60,76.7,83.3,86.7,93.3,96.7,100|30,45,20,50,15,80,60,70,40,55,80|0,10,16.7,26.7,33.3|50,10,30,55,60&chtt=Projected+Christmas+Cheer+for+2007&chco=458B00,CD2626&chdl=2006|2007&chdlp=r&chxt=y,x&chxl=1:|Dec+1st|||||6th|||||||||||||||||||25th|26th|||||Dec+31st&chxr=0,0.0,100.0,50.0&chg=3.333,10.0,1.0,3.0)
 
-## Documentation
-
-* API functions reference
-
-* Haskell data types reference, along with pending features and chart types
-
-* [Google Chart API]
