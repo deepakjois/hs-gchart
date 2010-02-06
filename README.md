@@ -109,25 +109,36 @@ Generates the following chart
 
 The code below
 
-    linexyGraph1 = 
+    linexyGraph2 = 
         getChartUrl $ do setChartSize 800 300
                          setChartType LineXY
                          setDataEncoding text
                          setChartTitle "Projected Christmas Cheer for 2007"
+     
                          setGrid $ makeGrid { xAxisStep = 3.333,
                                               yAxisStep = 10,
                                               lineSegmentLength = Just 1,
                                               blankSegmentLength = Just 3 }
+     
                          addAxis $ makeAxis { axisType = AxisLeft,
                                               axisRange = Just $ Range (0,100) (Just 50) }
                          addAxis $ makeAxis { axisType = AxisBottom,
                                               axisLabels = Just $ ["Dec 1st"] ++ blanks 4 ++ ["6th"] ++ blanks 18 ++ ["25th","26th"] ++ blanks 4 ++ ["Dec 31st"] }
-                         addChartDataXY dataSeries2
      
+                         addChartDataXY dataSeries3
+                         addColor "458B00"
+     
+                         addChartDataXY dataSeries4
+                         addColor "CD2626"
+     
+                         setLegend $ legendWithPosition ["2006","2007"] LegendRight
+     
+    dataSeries3 :: [(Float,Float)]
+    dataSeries3 = zip [0,16.7,23.3,33.3,60,76.7,83.3,86.7,93.3,96.7,100] [30,45,20,50,15,80,60,70,40,55,80]
+     
+    dataSeries4 :: [(Float,Float)]
+    dataSeries4 = zip [0,10,16.7,26.7,33.3] [50,10,30,55,60]
 
-    dataSeries2 :: [(Float,Float)]
-    dataSeries2 = [(0,0),(100,100)]
-    
     blanks x = take x $ repeat ""
 
 Generates the following chart
