@@ -73,7 +73,15 @@ linexyGraph2 =
 
                      setLegend $ legendWithPosition ["2006","2007"] LegendRight
 
-
+bargraph2 = getChartUrl $ do setChartSize 600 300
+                             setChartType BarHorizontalGrouped
+                             addChartData dataSeries1
+                             setChartTitleWithColor "Food and Drink Consumed Christmas 2007" "00AF33"
+                             addAxis $ makeAxis {  axisType = AxisBottom }
+                             addAxis $ makeAxis {  axisType = AxisLeft,
+                                                   axisLabels = Just labelSeries1 }
+                             addColor "00AF33"
+    
 
 
 blanks x = take x $ repeat ""
@@ -104,3 +112,4 @@ main = do putStrLn christmasPie
           putStrLn barGraph
           putStrLn linexyGraph1
           putStrLn linexyGraph2
+          putStrLn bargraph2
