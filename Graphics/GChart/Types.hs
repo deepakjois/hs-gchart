@@ -36,6 +36,11 @@ Some parameters are not supported yet :
 -}
 
 module Graphics.GChart.Types (
+
+  -- * Typeclasses
+  -- | Typeclasses for abstraction
+  ChartM, ChartItem(set,encode), ChartDataEncodable(addEncodedChartData),
+
   -- * Chart data
   -- | This type represents the Chart
   Chart(..),
@@ -84,7 +89,7 @@ module Graphics.GChart.Types (
   defaultChart, defaultAxis, defaultGrid
 ) where
 
-
+import Control.Monad.State
 
 -- | Size of the chart. width and height specified in pixels
 data ChartSize = Size Int Int deriving Show
@@ -309,6 +314,31 @@ data Chart =
     , chartLabels  :: Maybe ChartLabels
     , chartMargins :: Maybe ChartMargins
     } deriving Show
+
+
+-- | Chart monad which wraps a 'State' monad in turn
+-- to keep track of the chart state and make it convenient
+-- to update it
+type ChartM a = State Chart a
+
+-- | Typeclass abstracting all the fields in a chart
+class ChartItem c where
+  -- | sets the item in a chart
+  set :: c -> ChartM ()
+
+  -- | encode the field into a list string params that can
+  -- then be converted into a query string URL
+  encode :: c -> [(String,String)]
+
+
+-- | Typeclass abstracting the numeric data that can be encoded.
+-- This helps in passing Int and Float values as chart data, which
+-- are then encoded correctly
+class Num a => ChartDataEncodable a where
+    -- | Adds the array of numeric data to the existing chart data.
+    -- Throws a error if the data passed in doesnt match with the 
+    -- current data encoding format.
+    addEncodedChartData :: [a] -> ChartData -> ChartData
 
 
 -- | Default value for a chart

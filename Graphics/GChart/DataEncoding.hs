@@ -2,7 +2,7 @@ module Graphics.GChart.DataEncoding where
 
 import Graphics.GChart.Types
 
-import Data.List
+import Data.List(intercalate)
 import Data.Char (chr, ord)
 import Numeric (showHex)
 

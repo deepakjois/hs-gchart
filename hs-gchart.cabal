@@ -35,6 +35,12 @@ library
 
   other-modules:
      Graphics.GChart.ChartItems
+    ,Graphics.GChart.ChartItems.Basics
+    ,Graphics.GChart.ChartItems.Data
+    ,Graphics.GChart.ChartItems.Colors
+    ,Graphics.GChart.ChartItems.Labels
+    ,Graphics.GChart.ChartItems.Styles
+    ,Graphics.GChart.ChartItems.Util
     ,Graphics.GChart.DataEncoding
 
 
