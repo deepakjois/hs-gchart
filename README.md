@@ -17,9 +17,9 @@ types and features.
 
 ## Documentation
 
-* [API functions reference](http://deepak.jois.name/code/hs-gchart/Graphics-GChart.html)
+* [API functions reference](http://hackage.haskell.org/package/hs-gchart)
 
-* [Haskell data types reference](http://deepak.jois.name/code/hs-gchart/Graphics-GChart-Types.html), along with pending features and chart types
+* [Haskell data types reference](http://hackage.haskell.org/packages/archive/hs-gchart/0.1.1/doc/html/Graphics-GChart-Types.html)
 
 * [Google Chart API]
 
