@@ -3,6 +3,7 @@
 module Graphics.GChart.ChartItems (
   ChartM,
   ChartItem, set,
+  ChartDataEncodable,
   getChartDataFromChartM,
   addDataToChart,
   addColorToChart,
