@@ -29,8 +29,6 @@ Some parameters are not supported yet :
 
 - Data point labels <http://code.google.com/apis/chart/labels.html#data_point_labels>
 
-- Chart margins <http://code.google.com/apis/chart/styles.html#chart_margins>
-
 - Chart title color and font customisation <http://code.google.com/apis/chart/labels.html#chart_title>
 
 - Pie chart orientation <http://code.google.com/apis/chart/types.html#pie_charts>
