@@ -35,7 +35,7 @@ generatePieChart = getUrl $ do setChartSize 640 400
 @
 
 -} 
-  setChartSize, setDataEncoding, addChartData, setColors, addColor, addFill,
+  setChartSize, setChartType, setDataEncoding, setChartTitle,addChartData, setColors, addColor, addFill,
   setLegend, addAxis, setGrid, setLabels,
   -- * Retrieving Chart data
   getChartData, getUrl, convertToUrl,
