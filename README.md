@@ -1,11 +1,13 @@
 ## Introduction
 
- *GChart* is a Haskell wrapper around [Google Chart API].
+ **GChart** is a Haskell wrapper around [Google Chart API].
 
 [Google Chart API]: http://code.google.com/apis/chart/
 
-There is [GoogleChart] on Hackage. This library improves upon that effort by
-trying to design a more elegant API, and supporting more chart types and features.
+There is a library on Hackage called [GoogleChart] which provides another
+wrapper, however it has not been updated in a long while. GChart improves upon
+that effort by trying to design a more elegant API, and supporting more chart
+types and features.
 
 [GoogleChart]: http://hackage.haskell.org/packages/archive/GoogleChart/0.2/doc/html/Graphics-Google-Chart.html
 
@@ -34,23 +36,23 @@ For examples 1 and 2, the following code is common
 
 The code below
 
-     christmasPie = do setChartSize 600 300
-                       setDataEncoding simple
-                       setChartType Pie
-                       addChartData dataSeries1
-                       setChartTitle "Food and Drink Consumed Christmas 2007"
-                       setLabels labelSeries1
-                       setColors ["00AF33",
-                                  "4BB74C",
-                                  "EE2C2C",
-                                  "CC3232",
-                                  "33FF33",
-                                  "66FF66",
-                                  "9AFF9A",
-                                  "C1FFC1",
-                                  "CCFFCC" ]
+     christmasPie = getChartUrl $ do setChartSize 600 300
+                                     setDataEncoding simple
+                                     setChartType Pie
+                                     addChartData dataSeries1
+                                     setChartTitle "Food and Drink Consumed Christmas 2007"
+                                     setLabels labelSeries1
+                                     setColors ["00AF33",
+                                                "4BB74C",
+                                                "EE2C2C",
+                                                "CC3232",
+                                                "33FF33",
+                                                "66FF66",
+                                                "9AFF9A",
+                                                "C1FFC1",
+                                                "CCFFCC" ]
 
-Generates the following chart
+Generates the following chart. 
 
 ![Generated Pie Chart](http://chart.apis.google.com/chart?cht=p&chs=600x300&chd=s:KUIZFDPJF&chtt=Food+and+Drink+Consumed+Christmas+2007&chco=00AF33,4BB74C,EE2C2C,CC3232,33FF33,66FF66,9AFF9A,C1FFC1,CCFFCC&chl=Egg+nog|Christmas+Ham|Milk+%28not+including+egg+nog%29|Cookies|Roasted+Chestnuts|Chocolate|Various+Other+Beverages|Various+Other+Foods|Snacks)
 
@@ -58,14 +60,14 @@ Generates the following chart
 
 The code below 
     
-    barGraph = do setChartSize 600 300
-                  setChartType BarHorizontalGrouped
-                  addChartData dataSeries1
-                  setChartTitle "Food and Drink Consumed Christmas 2007"
-                  addAxis $ makeAxis {  axisType = AxisBottom }
-                  addAxis $ makeAxis {  axisType = AxisLeft,
-                                        axisLabels = Just labelSeries1 }
-                  addColor "00AF33"
+    barGraph = getChartUrl $ do setChartSize 600 300
+                                setChartType BarHorizontalGrouped
+                                addChartData dataSeries1
+                                setChartTitle "Food and Drink Consumed Christmas 2007"
+                                addAxis $ makeAxis {  axisType = AxisBottom }
+                                addAxis $ makeAxis {  axisType = AxisLeft,
+                                                      axisLabels = Just labelSeries1 }
+                                addColor "00AF33"
 
 
 Generates the following chart

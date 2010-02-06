@@ -25,20 +25,20 @@ These functions must be called inside a @do@ block, which can then be passed
 onto 'getUrl' or 'getChartData'.  For e.g, here is a simple pie chart function
 
 @
-generatePieChart = getUrl $ do setChartSize 640 400
-                               setChartType Pie
-                               setChartTitle \"Test\"
-                               addChartData  ([1,2,3,4,5]::[Int])
-                               addColor \"FF0000\"
-                               setLegend $ legend [\"t1\",\"t2\", \"t3\",\"t4\",\"t5\"]
-                               setLabels $ [\"Test 1\", \"Test 2\", \"Test 3\", \"Test 4\", \"Test 5\"]
+generatePieChart = getChartUrl $ do setChartSize 640 400
+                                 setChartType Pie
+                                 setChartTitle \"Test\"
+                                 addChartData  ([1,2,3,4,5]::[Int])
+                                 addColor \"FF0000\"
+                                 setLegend $ legend [\"t1\",\"t2\", \"t3\",\"t4\",\"t5\"]
+                                 setLabels $ [\"Test 1\", \"Test 2\", \"Test 3\", \"Test 4\", \"Test 5\"]
 @
 
 -} 
   setChartSize, setChartType, setDataEncoding, setChartTitle,addChartData, setColors, addColor, addFill,
   setLegend, addAxis, setGrid, setLabels,
   -- * Retrieving Chart data
-  getChartData, getUrl, convertToUrl,
+  getChartData, getChartUrl, convertToUrl,
 
   -- * Smart Constructors 
   -- | These functions can be used to construct chart
@@ -181,8 +181,8 @@ getChartData :: ChartM () -> Chart
 getChartData = getChartDataFromChartM
 
 -- | Extracts the data out of the monad and returns a URL string for the chart 
-getUrl :: ChartM () -> String
-getUrl =  convertToUrl . getChartData
+getChartUrl :: ChartM () -> String
+getChartUrl =  convertToUrl . getChartData
 
 -- | Converts a value of type 'Chart' to a URL
 convertToUrl :: Chart -> String
@@ -190,20 +190,20 @@ convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
     urlparams = [urlEnc a ++ "=" ++ urlEnc b | (a,b) <- getParams chart]
 
-debugPieChart = getUrl $ do setChartSize 640 400
-                            setChartType Pie
-                            setChartTitle "Test"
-                            addChartData  ([1,2,3,4,5]::[Int])
-                            addColor "FF0000"
-                            setLegend $ legend ["t1","t2", "t3","t4","t5"]
-                            setLabels $ ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
+debugPieChart = getChartUrl $ do setChartSize 640 400
+                                 setChartType Pie
+                                 setChartTitle "Test"
+                                 addChartData  ([1,2,3,4,5]::[Int])
+                                 addColor "FF0000"
+                                 setLegend $ legend ["t1","t2", "t3","t4","t5"]
+                                 setLabels $ ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
-debugBarChart = getUrl $ do setChartSize 640 400
-                            setChartType BarVerticalGrouped
-                            setDataEncoding text
-                            addChartData  ([100,200,300,400,500]::[Float])
-                            addChartData  ([3,4,5,6,7]::[Float])
-                            addChartData  ([4.0,5.0,6.0,7.0,8]::[Float])
-                            addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
-                            setColors ["FF0000","00FF00","0000FF"]
-                            setLegend $ legend ["Set 1", "Set 2", "Set 3"]
+debugBarChart = getChartUrl $ do setChartSize 640 400
+                                 setChartType BarVerticalGrouped
+                                 setDataEncoding text
+                                 addChartData  ([100,200,300,400,500]::[Float])
+                                 addChartData  ([3,4,5,6,7]::[Float])
+                                 addChartData  ([4.0,5.0,6.0,7.0,8]::[Float])
+                                 addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
+                                 setColors ["FF0000","00FF00","0000FF"]
+                                 setLegend $ legend ["Set 1", "Set 2", "Set 3"]
