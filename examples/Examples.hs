@@ -34,7 +34,7 @@ barGraph = getChartUrl $ do setChartSize 600 300
                                                   axisLabels = Just labelSeries1 }
                             addColor "00AF33"
 
-linexyGraph1 = 
+linexyGraph1 =
     getChartUrl $ do setChartSize 800 300
                      setChartType LineXY
                      setDataEncoding text
@@ -49,7 +49,7 @@ linexyGraph1 =
                                           axisLabels = Just $ ["Dec 1st"] ++ blanks 4 ++ ["6th"] ++ blanks 18 ++ ["25th","26th"] ++ blanks 4 ++ ["Dec 31st"] }
                      addChartDataXY dataSeries2
 
-linexyGraph2 = 
+linexyGraph2 =
     getChartUrl $ do setChartSize 800 300
                      setChartType LineXY
                      setDataEncoding text
@@ -75,14 +75,31 @@ linexyGraph2 =
 
 bargraph2 = getChartUrl $ do setChartSize 600 300
                              setChartType BarHorizontalGrouped
+                             setDataEncoding simple
                              addChartData dataSeries1
                              setChartTitleWithColor "Food and Drink Consumed Christmas 2007" "00AF33"
                              addAxis $ makeAxis {  axisType = AxisBottom }
                              addAxis $ makeAxis {  axisType = AxisLeft,
                                                    axisLabels = Just labelSeries1 }
                              addColor "00AF33"
-    
 
+
+bargraphAutoSpacing = getChartUrl $ do setChartSize 190 125
+                                       setChartType BarVerticalGrouped
+                                       setDataEncoding simple
+                                       addChartData ([10,15,20,25,30]::[Int])
+                                       addChartData ([13,5,6,34,12]::[Int])
+                                       setColors ["4d89f9","000000"]
+                                       setBarWidthSpacing $ automatic
+
+
+bargraphRelativeSpacing = getChartUrl $ do setChartSize 190 125
+                                           setChartType BarVerticalGrouped
+                                           setDataEncoding simple
+                                           addChartData ([10,15,20,25,30]::[Int])
+                                           addChartData ([13,5,6,34,12]::[Int])
+                                           setColors ["4d89f9","000000"]
+                                           setBarWidthSpacing $ relative 0.5 1.5
 
 blanks x = take x $ repeat ""
 
@@ -113,3 +130,5 @@ main = do putStrLn christmasPie
           putStrLn linexyGraph1
           putStrLn linexyGraph2
           putStrLn bargraph2
+          putStrLn bargraphAutoSpacing
+          putStrLn bargraphRelativeSpacing

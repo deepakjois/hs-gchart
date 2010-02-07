@@ -21,8 +21,6 @@ Some parameters are not supported yet :
 
 - Fill area <http://code.google.com/apis/chart/colors.html#fill_area_marker>
 
-- Bar width and spacing <http://code.google.com/apis/chart/styles.html#bar_width>
-
 - Bar chart zero line  <http://code.google.com/apis/chart/styles.html#zero_line>
 
 - Data point labels <http://code.google.com/apis/chart/labels.html#data_point_labels>
@@ -80,6 +78,9 @@ module Graphics.GChart.Types (
 
   -- ** Chart Margins
   ChartMargins(..),
+
+  -- ** Bar width and spacing
+  BarChartWidthSpacing(..), BarWidth(..), BarGroupSpacing(..),
 
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
@@ -301,6 +302,21 @@ data ChartMargins =
     , legendMargins  :: Maybe (Int,Int)  -- ^ Minimum width and height  of legend
     } deriving Show
 
+
+-- | Bar Width
+data BarWidth = Automatic    -- ^ Automatic resizing
+              | BarWidth Int -- ^ Bar width in pixels
+              deriving Show
+
+-- | Bar and Group Spacing
+data BarGroupSpacing = Fixed (Int, Int)          -- ^ Fixed spacing values in pixels
+                     | Relative (Float,Float)    -- ^ Relative values as percentages
+                     deriving Show
+
+
+-- | Bar Width and Spacing.
+type BarChartWidthSpacing =  (Maybe BarWidth, Maybe BarGroupSpacing)
+
 -- | Data type for the chart
 data Chart =
     Chart {
@@ -315,6 +331,7 @@ data Chart =
     , chartGrid    :: Maybe ChartGrid
     , chartLabels  :: Maybe ChartLabels
     , chartMargins :: Maybe ChartMargins
+    , barChartWidthSpacing :: Maybe BarChartWidthSpacing
     } deriving Show
 
 
@@ -355,7 +372,8 @@ defaultChart =
             chartAxes = Nothing,
             chartGrid = Nothing,
             chartLabels = Nothing,
-            chartMargins = Nothing
+            chartMargins = Nothing,
+            barChartWidthSpacing = Nothing
           }
 
 -- | Default value for an axis
@@ -380,6 +398,8 @@ defaultGrid = ChartGrid {  xAxisStep = 20,
                            xOffset = Nothing,
                            yOffset = Nothing }
 
+
+defaultSpacing = Fixed (4,8)
 
 {-
 defaultShapeMarker =  ShapeMarker { shapeType = ShapeCircle,

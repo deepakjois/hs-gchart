@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Graphics.GChart.ChartItems.Styles where
 
 import Graphics.GChart.Types
@@ -7,7 +8,19 @@ import Data.List(intercalate)
 import Control.Monad(liftM)
 import Data.Maybe(catMaybes)
 
--- TODO: Bar Width and Spacing
+-- Bar Width and Spacing
+instance ChartItem BarChartWidthSpacing where
+    set widthspacing = updateChart $ \chart -> chart { barChartWidthSpacing = Just widthspacing }
+
+    encode (Nothing           , Nothing)               = error "Invalid Values"
+    encode (Just Automatic    , Just (Relative _))     = error "Invalid Values"
+    encode (Just (BarWidth _) , Just (Relative _))     = error "Invalid Values"
+    encode (Just Automatic    , Nothing)               = asList ("chbh", "a")
+    encode (Just Automatic    , Just (Fixed (b,g)))    = asList ("chbh", intercalate "," ["a",show b, show g])
+    encode (Just (BarWidth bw), Just (Fixed (b,g)))    = asList ("chbh", intercalate "," [show bw, show b ,show g])
+    encode (Just (BarWidth bw), Nothing)               = asList ("chbh", show bw)
+    encode (Nothing           , Just (Relative (b,g))) = asList ("chbh", intercalate "," ["r", show b, show g])
+    encode (_,_)                                      = error "Invalid Values"
 
 -- TODO: Bar Chart Zero Line
 

@@ -62,5 +62,6 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartAxes    chart,
                                                  encodeMaybe $ chartGrid    chart,
                                                  encodeMaybe $ chartLabels  chart,
-                                                 encodeMaybe $ chartMargins chart]
+                                                 encodeMaybe $ chartMargins chart,
+                                                 encodeMaybe $ barChartWidthSpacing chart]
 

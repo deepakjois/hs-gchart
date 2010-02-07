@@ -39,7 +39,7 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
   setChartSize, setChartType, setDataEncoding, setChartTitle,
   setChartTitleWithColor, setChartTitleWithColorAndFontSize, addChartData,
   addChartDataXY, setColors, addColor, addFill, setLegend, addAxis, setGrid,
-  setLabels,
+  setLabels, setBarWidthSpacing,
   -- * Retrieving Chart data
   getChartData, getChartUrl, convertToUrl,
 
@@ -47,7 +47,8 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
   -- | These functions can be used to construct chart
   -- parameters more conveniently
   solid, legend, legendWithPosition, makeAxis, makeGrid,
-  simple,text,extended
+  simple, text, extended, automatic, automaticWithSpacing,
+  barwidth, barwidthspacing, relative
 ) where
 
 import Graphics.GChart.Types
@@ -109,6 +110,26 @@ text = Text []
 --  function.
 extended :: ChartData
 extended = Extended []
+
+-- | Set automatic bar width for bar chart
+automatic :: BarChartWidthSpacing
+automatic = (Just Automatic,Nothing)
+
+-- | Set automatic bar width for bar chart, with spacing values
+automaticWithSpacing :: Int -> Int -> BarChartWidthSpacing
+automaticWithSpacing b g= (Just Automatic, Just (Fixed (b,g)))
+
+-- | Set bar width for chart
+barwidth :: Int -> BarChartWidthSpacing
+barwidth n = (Just (BarWidth n), Nothing)
+
+-- | Set bar width and spacing for chart
+barwidthspacing :: Int -> Int -> Int -> BarChartWidthSpacing
+barwidthspacing bw b g = (Just (BarWidth bw), Just (Fixed (b,g)))
+
+-- | Set relative spacing
+relative :: Float -> Float -> BarChartWidthSpacing
+relative b g = (Nothing, Just (Relative (b,g)))
 
 {- Setting Chart Parameters-}
 
@@ -192,6 +213,11 @@ setGrid = set
 -- | Set labels for the chart
 setLabels :: [String] -> ChartM ()
 setLabels = set . ChartLabels
+
+
+-- | Set bar and width spacing
+setBarWidthSpacing :: BarChartWidthSpacing -> ChartM ()
+setBarWidthSpacing = set
 
 {- Retrieving Chart Data -}
 
