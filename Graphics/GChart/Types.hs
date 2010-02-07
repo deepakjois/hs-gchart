@@ -1,3 +1,4 @@
+{-# LANGUAGE ExistentialQuantification #-}
 {-| This module contains the Haskell data model for the Google Chart API.
 
 Details about the parameters can be found on the Google Chart API website :
@@ -73,6 +74,10 @@ module Graphics.GChart.Types (
   -- ** Grid Lines
   ChartGrid(..),
 
+  -- ** Chart Markers
+  AnyChartMarker(..), ChartMarker(..), ChartMarkers,
+  ShapeType(..), ShapeDataPoint(..), ShapeMarker(..),
+
   -- ** Pie chart and Google-o-meter labels
   ChartLabels(..),
 
@@ -85,7 +90,7 @@ module Graphics.GChart.Types (
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
        used as starting points to construct parameters when creating charts. -}
-  defaultChart, defaultAxis, defaultGrid
+  defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker
 ) where
 
 import Control.Monad.State
@@ -265,26 +270,53 @@ data ChartGrid =
     , yOffset :: Maybe Float -- ^ y axis offset
     } deriving Show
 
+-- | Shape type of 'ShapeMarker'
+data ShapeType = ShapeArrow       -- ^ Arrow
+               | ShapeCross       -- ^ Cross
+               | ShapeDiamond     -- ^ Diamond
+               | ShapeCircle      -- ^ Circle
+               | ShapeSquare      -- ^ Square
+               | VerticalLine     -- ^ Vertical line from x-axis to data point
+               | VerticalLineFull -- ^ Vertical line across the chart
+               | HorizontalLine   -- ^ Horizontal line across the chart
+               | ShapeX           -- ^ X shape
+                 deriving Show
 
-{-
-data ShapeType = ShapeArrow | ShapeCross | ShapeDiamond | ShapeCircle | ShapeSquare | VerticalLine | VerticalLineFull | HorizontalLine | ShapeX deriving Show
-data ShapeDataPoint =  DataPoint Int | DataPointEvery | DataPointEveryN Int | DataPointEveryNRange Int Int Int | DataPointXY Float Float deriving Show
-data RangeMarkerType = RangeMarkerHorizontal | RangeMarkerVertical deriving Show
+-- | Data point value of `ShapeMarker`
+data ShapeDataPoint = DataPoint Int
+                    | DataPointEvery
+                    | DataPointEveryN Int
+                    | DataPointEveryNRange Int Int Int
+                    | DataPointXY Float Float
+                      deriving Show
 
+-- | Shape Marker
+data ShapeMarker =
+    SM { shapeType  :: ShapeType           -- ^ Shape type
+       , shapeColor :: Color               -- ^ Shape Marker color
+       , shapeDataSetIdx :: Int            -- ^ Data Set Index
+       , shapeDataPoint  :: ShapeDataPoint -- ^ Data point value
+       , shapeSize :: Int                  -- ^ Size in pixels
+       , shapePriority :: Int              -- ^ Priority of drawing. Can be one of -1,0,1
+       } deriving Show
 
-data ChartMarker =  ShapeMarker { shapeType  :: ShapeType,
-                                  shapeColor :: Color,
-                                  shapeDataSetIdx :: Int,
-                                  shapeDataPoint  :: ShapeDataPoint,
-                                  shapeSize :: Int,
-                                  shapePriority :: Int
-                                 } |
-                    RangeMarker { rangeType  :: RangeMarkerType,
-                                  rangeColor :: Color,
-                                  rangeSpan :: (Float,Float) } deriving Show
+-- data RangeMarkerType = RangeMarkerHorizontal | RangeMarkerVertical deriving Show
 
-type ChartMarkers = [ChartMarker]
--}
+-- | Typeclass to abstract over different chart markers
+class Show a => ChartMarker a where
+    encodeChartMarker :: a -> String
+    encodeChartMarker a = ""
+
+-- | Data type to abstract over all kinds of ChartMarker
+data AnyChartMarker = forall w. ChartMarker w => AnyChartMarker w
+
+instance ChartMarker AnyChartMarker where
+    encodeChartMarker (AnyChartMarker m) = encodeChartMarker m
+
+instance Show AnyChartMarker where
+    show (AnyChartMarker m) = show m
+
+type ChartMarkers = [AnyChartMarker]
 
 -- | Labels for Pie Chart and Google-o-meter.
 -- Specify a list with a single label for Google-o-meter
@@ -328,6 +360,7 @@ data Chart =
     , chartFills   :: Maybe ChartFills
     , chartLegend  :: Maybe ChartLegend
     , chartAxes    :: Maybe ChartAxes
+    , chartMarkers :: Maybe ChartMarkers
     , chartGrid    :: Maybe ChartGrid
     , chartLabels  :: Maybe ChartLabels
     , chartMargins :: Maybe ChartMargins
@@ -373,6 +406,7 @@ defaultChart =
             chartGrid = Nothing,
             chartLabels = Nothing,
             chartMargins = Nothing,
+            chartMarkers = Nothing,
             barChartWidthSpacing = Nothing
           }
 
@@ -401,11 +435,10 @@ defaultGrid = ChartGrid {  xAxisStep = 20,
 
 defaultSpacing = Fixed (4,8)
 
-{-
-defaultShapeMarker =  ShapeMarker { shapeType = ShapeCircle,
-                                    shapeColor = "0000DD",
-                                    shapeDataSetIdx = 0,
-                                    shapeDataPoint = DataPointEvery,
-                                    shapeSize = 5,
-                                    shapePriority = 0 }
--}
+
+defaultShapeMarker =  SM { shapeType = ShapeCircle,
+                           shapeColor = "0000DD",
+                           shapeDataSetIdx = 0,
+                           shapeDataPoint = DataPointEvery,
+                           shapeSize = 5,
+                           shapePriority = 0 }

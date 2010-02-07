@@ -22,7 +22,6 @@ import Data.List
 import Data.Maybe
 
 
-
 getChartDataFromChartM m = execState m defaultChart
 
 addDataToChart d = do c <- get

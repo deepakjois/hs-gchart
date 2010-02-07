@@ -1,3 +1,4 @@
+{-# LANGUAGE  TypeSynonymInstances #-}
 module Graphics.GChart.ChartItems.Util (
   updateChart,asList
 ) where

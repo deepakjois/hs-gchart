@@ -20,7 +20,7 @@ instance ChartItem BarChartWidthSpacing where
     encode (Just (BarWidth bw), Just (Fixed (b,g)))    = asList ("chbh", intercalate "," [show bw, show b ,show g])
     encode (Just (BarWidth bw), Nothing)               = asList ("chbh", show bw)
     encode (Nothing           , Just (Relative (b,g))) = asList ("chbh", intercalate "," ["r", show b, show g])
-    encode (_,_)                                      = error "Invalid Values"
+    encode (_,_)                                       = error "Invalid Values"
 
 -- TODO: Bar Chart Zero Line
 
@@ -48,3 +48,40 @@ instance ChartItem ChartGrid where
                                                                                    liftM show e,
                                                                                    liftM show f]
 -- TODO: Shape, Range, Financial Markers
+
+-- ChartItem instance for ChartMarkers
+instance ChartItem ChartMarkers where
+    set markers    = updateChart $ \chart -> chart { chartMarkers = Just markers }
+    encode markers = asList ("chm",intercalate "|" $ map encodeChartMarker markers)
+
+-- Shape Marker
+instance ChartMarker ShapeMarker where
+    encodeChartMarker marker = optionalat ++  (intercalate "," $  [marker_type, color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
+                                 marker_type = case shapeType marker of
+                                                 ShapeArrow       -> "a"
+                                                 ShapeCross       -> "c"
+                                                 ShapeDiamond     -> "d"
+                                                 ShapeCircle      -> "o"
+                                                 ShapeSquare      -> "s"
+                                                 VerticalLine     -> "v"
+                                                 VerticalLineFull -> "V"
+                                                 HorizontalLine   -> "h"
+                                                 ShapeX           -> "x"
+
+                                 color = shapeColor marker
+
+                                 datapoint = case shapeDataPoint marker of
+                                               DataPoint x                ->  show x
+                                               DataPointEvery             ->  "-1"
+                                               DataPointEveryN x          ->  "-" ++ show x
+                                               DataPointEveryNRange x y n ->  intercalate ":"$  map show [x,y,n]
+                                               DataPointXY x y            ->  show x ++ ":" ++ show y
+
+                                 idx  = show $ shapeDataSetIdx marker
+                                 size = show $ shapeSize marker
+                                 priority = shapePriority marker
+
+                                 optionalat = [ '@' | isDataPointXY $ shapeDataPoint marker ]
+                                 isDataPointXY (DataPointXY _ _) = True
+                                 isDataPointXY _                 = False
+
