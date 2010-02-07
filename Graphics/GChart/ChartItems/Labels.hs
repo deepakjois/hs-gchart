@@ -6,7 +6,7 @@ import Graphics.GChart.ChartItems.Util
 
 import Data.List(intercalate)
 import Control.Monad(liftM)
-import Data.Maybe(catMaybes, fromJust, fromMaybe)
+import Data.Maybe(catMaybes, fromJust)
 
 -- Chart Title
 instance ChartItem ChartTitle where
@@ -21,7 +21,6 @@ encodeColorAndFontSize title =
 
 
 -- Chart Legend
-
 instance ChartItem ChartLegend where
     set legend = updateChart $ \chart -> chart { chartLegend = Just legend }
 
