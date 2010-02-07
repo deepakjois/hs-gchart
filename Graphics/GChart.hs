@@ -215,7 +215,7 @@ debugPieChart = getChartUrl $ do setChartSize 640 400
                                  addChartData  ([1,2,3,4,5]::[Int])
                                  addColor "FF0000"
                                  setLegend $ legend ["t1","t2", "t3","t4","t5"]
-                                 setLabels $ ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
+                                 setLabels ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
 debugBarChart = getChartUrl $ do setChartSize 640 400
                                  setChartType BarVerticalGrouped

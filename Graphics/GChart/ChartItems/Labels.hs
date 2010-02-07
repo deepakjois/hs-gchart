@@ -12,12 +12,12 @@ import Data.Maybe(catMaybes, fromJust, fromMaybe)
 instance ChartItem ChartTitle where
     set title = updateChart $ \chart -> chart { chartTitle = Just title }
 
-    encode title =  ("chtt", titleStr title) : if (chts /= "") then [("chts",chts)] else []
+    encode title =  ("chtt", titleStr title) : [("chts", chts) | chts /= ""]
                     where chts = encodeColorAndFontSize title
 
 encodeColorAndFontSize title =
-    intercalate "," $ catMaybes $ [titleColor $ title,
-                                   liftM show . titleFontSize  $ title]
+    intercalate "," $ catMaybes [titleColor title,
+                                 liftM show . titleFontSize  $ title]
 
 
 -- Chart Legend

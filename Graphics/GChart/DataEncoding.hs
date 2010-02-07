@@ -23,7 +23,7 @@ encodeText datas = "t:" ++ intercalate "|" (map encData datas) where
     encDatum i | i >= 0 && i <= 100 = showDecimal i
                | otherwise          = "-1"
     showDecimal :: Float -> String
-    showDecimal i | ((makeFloat (truncate i)) - i) == 0  = show $ truncate i
+    showDecimal i | makeFloat (truncate i) - i == 0  = show $ truncate i
                   | otherwise                            = show (fromIntegral (round (i * 10.0)) / 10.0)
     makeFloat i = fromIntegral i :: Float
 
