@@ -54,7 +54,7 @@ instance ChartItem ChartMarkers where
     set markers    = updateChart $ \chart -> chart { chartMarkers = Just markers }
     encode markers = asList ("chm",intercalate "|" $ map encodeChartMarker markers)
 
--- Shape Marker
+-- Shape Markers
 instance ChartMarker ShapeMarker where
     encodeChartMarker marker = optionalat ++  (intercalate "," $  [marker_type, color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
                                  marker_type = case shapeType marker of
@@ -84,7 +84,7 @@ instance ChartMarker ShapeMarker where
                                  optionalat = [ '@' | isDataPointXY $ shapeDataPoint marker ]
                                  isDataPointXY (DataPointXY _) = True
                                  isDataPointXY _               = False
-
+-- Range Markers
 instance ChartMarker RangeMarker where
     encodeChartMarker marker = intercalate "," [rangetype, color,"0",x,y] where
                                  rangetype = case rangeMarkerType marker of
@@ -94,3 +94,19 @@ instance ChartMarker RangeMarker where
                                  color = rangeMarkerColor marker
                                  x = show.fst $ rangeMarkerRange marker
                                  y = show.snd $ rangeMarkerRange marker
+
+-- Financial Markers
+instance ChartMarker FinancialMarker where
+    encodeChartMarker marker = (intercalate "," $  ["F", color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
+                                 color = financeColor marker
+
+                                 datapoint = case financeDataPoint marker of
+                                               DataPoint x                  ->  show x
+                                               DataPointEvery               ->  "-1"
+                                               DataPointEveryN x            ->  "-" ++ show x
+                                               DataPointEveryNRange (x,y) n ->  error "Invalid value for finanical marker"
+                                               DataPointXY (x,y)            ->   show x ++ ":" ++ show y
+
+                                 idx  = show $ financeDataSetIdx marker
+                                 size = show $ financeSize marker
+                                 priority = financePriority marker

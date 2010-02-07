@@ -234,21 +234,3 @@ convertToUrl :: Chart -> String
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
     urlparams = [urlEnc a ++ "=" ++ urlEnc b | (a,b) <- getParams chart]
-
-debugPieChart = getChartUrl $ do setChartSize 640 400
-                                 setChartType Pie
-                                 setChartTitle"Test"
-                                 addChartData  ([1,2,3,4,5]::[Int])
-                                 addColor "FF0000"
-                                 setLegend $ legend ["t1","t2", "t3","t4","t5"]
-                                 setLabels ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
-
-debugBarChart = getChartUrl $ do setChartSize 640 400
-                                 setChartType BarVerticalGrouped
-                                 setDataEncoding text
-                                 addChartData  ([100,200,300,400,500]::[Float])
-                                 addChartData  ([3,4,5,6,7]::[Float])
-                                 addChartData  ([4.0,5.0,6.0,7.0,8]::[Float])
-                                 addAxis $ makeAxis { axisType = AxisLeft,axisLabels = Just ["0","100"] }
-                                 setColors ["FF0000","00FF00","0000FF"]
-                                 setLegend $ legend ["Set 1", "Set 2", "Set 3"]

@@ -14,17 +14,11 @@ Some parameters are not supported yet :
 
 - Data Scaling <http://code.google.com/apis/chart/formats.html#data_scaling>
 
-- Shape markers <http://code.google.com/apis/chart/styles.html#shape_markers>
-
-- Range markers <http://code.google.com/apis/chart/styles.html#range_markers>
-
-- Financial markers <http://code.google.com/apis/chart/styles.html#financial_markers>
-
-- Fill area <http://code.google.com/apis/chart/colors.html#fill_area_marker>
-
 - Bar chart zero line  <http://code.google.com/apis/chart/styles.html#zero_line>
 
 - Data point labels <http://code.google.com/apis/chart/labels.html#data_point_labels>
+
+- Fill area <http://code.google.com/apis/chart/colors.html#fill_area_marker>
 
 - Line Styles <http://code.google.com/apis/chart/styles.html#line_styles>
 
@@ -76,8 +70,8 @@ module Graphics.GChart.Types (
 
   -- ** Chart Markers
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
-  ShapeType(..), ShapeDataPoint(..), ShapeMarker(..),
-  RangeMarkerType(..), RangeMarker(..),
+  ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
+  RangeMarkerType(..), RangeMarker(..), FinancialMarker(..),
 
   -- ** Pie chart and Google-o-meter labels
   ChartLabels(..),
@@ -92,7 +86,7 @@ module Graphics.GChart.Types (
   {-| These functions return default values for complex parameters, which can be
        used as starting points to construct parameters when creating charts. -}
   defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker,
-  defaultRangeMarker
+  defaultRangeMarker, defaultFinancialMarker
 ) where
 
 import Control.Monad.State
@@ -286,7 +280,7 @@ data ShapeType = ShapeArrow       -- ^ Arrow
 
 
 -- | Data point value of `ShapeMarker`
-data ShapeDataPoint =
+data MarkerDataPoint =
     DataPoint Float       -- ^ A specific data point in the dataset. Use a
                           -- decimal value to interpolate between two points
 
@@ -312,7 +306,7 @@ data ShapeMarker =
     SM { shapeType  :: ShapeType           -- ^ Shape type
        , shapeColor :: Color               -- ^ Shape Marker color
        , shapeDataSetIdx :: Int            -- ^ Data Set Index
-       , shapeDataPoint  :: ShapeDataPoint -- ^ Data point value
+       , shapeDataPoint  :: MarkerDataPoint -- ^ Data point value
        , shapeSize :: Int                  -- ^ Size in pixels
        , shapePriority :: Int              -- ^ Priority of drawing. Can be one of -1,0,1
        } deriving Show
@@ -325,7 +319,7 @@ data RangeMarkerType = RangeMarkerHorizontal -- ^ horizontal range
 -- | Range Marker
 data RangeMarker =
   RM { rangeMarkerType  :: RangeMarkerType -- ^ Range marker type
-     , rangeMarkerColor :: Color  -- ^ Range marker color
+     , rangeMarkerColor :: Color           -- ^ Range marker color
      , rangeMarkerRange :: (Float, Float) -- ^ @(start,end) range. @For
                                           -- horizontal range markers, the
                                           -- (start,end) value is a position on
@@ -338,6 +332,16 @@ data RangeMarker =
                                           -- chart, and 1.00 is the right of the
                                           -- chart.
     } deriving Show
+
+
+-- | Financial Marker, for line charts and vertical bar charts
+data FinancialMarker =
+    FM { financeColor :: Color                -- ^ Finance Marker color
+       , financeDataSetIdx :: Int             -- ^ Data Set Index
+       , financeDataPoint  :: MarkerDataPoint -- ^ Data point value
+       , financeSize :: Int                   -- ^ Size in pixels
+       , financePriority :: Int               -- ^ Priority of drawing. Can be one of -1,0,1
+       } deriving Show
 
 -- | Typeclass to abstract over different chart markers
 class Show a => ChartMarker a where
@@ -480,6 +484,14 @@ defaultShapeMarker =  SM { shapeType = ShapeCircle,
                            shapeSize = 5,
                            shapePriority = 0 }
 
+-- | Default value of range marker
 defaultRangeMarker = RM { rangeMarkerType  = RangeMarkerHorizontal,
                           rangeMarkerColor = "0000DD",
                           rangeMarkerRange = (0.0,1.0) }
+
+-- | Default value of a financial marker. Make sure you change the value of @financeDataSetIdx@
+defaultFinancialMarker = FM { financeColor = "0000DD",
+                              financeDataSetIdx = -1,
+                              financeDataPoint = DataPointEvery,
+                              financeSize = 5,
+                              financePriority = 0 }
