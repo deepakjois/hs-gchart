@@ -77,6 +77,7 @@ module Graphics.GChart.Types (
   -- ** Chart Markers
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
   ShapeType(..), ShapeDataPoint(..), ShapeMarker(..),
+  RangeMarkerType(..), RangeMarker(..),
 
   -- ** Pie chart and Google-o-meter labels
   ChartLabels(..),
@@ -90,7 +91,8 @@ module Graphics.GChart.Types (
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
        used as starting points to construct parameters when creating charts. -}
-  defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker
+  defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker,
+  defaultRangeMarker
 ) where
 
 import Control.Monad.State
@@ -282,13 +284,28 @@ data ShapeType = ShapeArrow       -- ^ Arrow
                | ShapeX           -- ^ X shape
                  deriving Show
 
+
 -- | Data point value of `ShapeMarker`
-data ShapeDataPoint = DataPoint Int
-                    | DataPointEvery
-                    | DataPointEveryN Int
-                    | DataPointEveryNRange Int Int Int
-                    | DataPointXY Float Float
-                      deriving Show
+data ShapeDataPoint =
+    DataPoint Float       -- ^ A specific data point in the dataset. Use a
+                          -- decimal value to interpolate between two points
+
+  | DataPointEvery        -- ^ Draw a marker on each data point
+
+  | DataPointEveryN Int   -- ^ Draw a marker on every n-th data point
+
+  | DataPointEveryNRange (Int,Int) Int -- ^ @(x,y), n@ draw a marker on every n-th
+                                       -- data point in a range, where x is the
+                                       -- first data point in the range, and y is
+                                       -- the last data point in the range
+
+  | DataPointXY (Float,Float) -- ^ draw a marker at a specific point
+                              -- (x,y). Specify the coordinates as floating
+                              -- point values, where 0:0 is the bottom left
+                              -- corner of the chart, 0.5:0.5 is the center of
+                              -- the chart, and 1:1 is the top right corner of
+                              -- the chart
+    deriving Show
 
 -- | Shape Marker
 data ShapeMarker =
@@ -300,7 +317,27 @@ data ShapeMarker =
        , shapePriority :: Int              -- ^ Priority of drawing. Can be one of -1,0,1
        } deriving Show
 
--- data RangeMarkerType = RangeMarkerHorizontal | RangeMarkerVertical deriving Show
+-- | 'RangeMarker' type
+data RangeMarkerType = RangeMarkerHorizontal -- ^ horizontal range
+                     | RangeMarkerVertical   -- ^ vertical range
+                       deriving Show
+
+-- | Range Marker
+data RangeMarker =
+  RM { rangeMarkerType  :: RangeMarkerType -- ^ Range marker type
+     , rangeMarkerColor :: Color  -- ^ Range marker color
+     , rangeMarkerRange :: (Float, Float) -- ^ @(start,end) range. @For
+                                          -- horizontal range markers, the
+                                          -- (start,end) value is a position on
+                                          -- the y-axis, where 0.00 is the
+                                          -- bottom of the chart, and 1.00 is
+                                          -- the top of the chart. For vertical
+                                          -- range markers, the (start,end)
+                                          -- value is a position on the x-axis,
+                                          -- where 0.00 is the left of the
+                                          -- chart, and 1.00 is the right of the
+                                          -- chart.
+    } deriving Show
 
 -- | Typeclass to abstract over different chart markers
 class Show a => ChartMarker a where
@@ -432,13 +469,17 @@ defaultGrid = ChartGrid {  xAxisStep = 20,
                            xOffset = Nothing,
                            yOffset = Nothing }
 
-
+-- | Default value for bar and group spacing in bar chart
 defaultSpacing = Fixed (4,8)
 
-
+-- | Default value of a shape marker. Make sure you change the value of @shapeDataSetIdx@
 defaultShapeMarker =  SM { shapeType = ShapeCircle,
                            shapeColor = "0000DD",
-                           shapeDataSetIdx = 0,
+                           shapeDataSetIdx = -1,
                            shapeDataPoint = DataPointEvery,
                            shapeSize = 5,
                            shapePriority = 0 }
+
+defaultRangeMarker = RM { rangeMarkerType  = RangeMarkerHorizontal,
+                          rangeMarkerColor = "0000DD",
+                          rangeMarkerRange = (0.0,1.0) }

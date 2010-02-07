@@ -71,17 +71,26 @@ instance ChartMarker ShapeMarker where
                                  color = shapeColor marker
 
                                  datapoint = case shapeDataPoint marker of
-                                               DataPoint x                ->  show x
-                                               DataPointEvery             ->  "-1"
-                                               DataPointEveryN x          ->  "-" ++ show x
-                                               DataPointEveryNRange x y n ->  intercalate ":"$  map show [x,y,n]
-                                               DataPointXY x y            ->  show x ++ ":" ++ show y
+                                               DataPoint x                  ->  show x
+                                               DataPointEvery               ->  "-1"
+                                               DataPointEveryN x            ->  "-" ++ show x
+                                               DataPointEveryNRange (x,y) n ->  intercalate ":"$  map show [x,y,n]
+                                               DataPointXY (x,y)            ->  show x ++ ":" ++ show y
 
                                  idx  = show $ shapeDataSetIdx marker
                                  size = show $ shapeSize marker
                                  priority = shapePriority marker
 
                                  optionalat = [ '@' | isDataPointXY $ shapeDataPoint marker ]
-                                 isDataPointXY (DataPointXY _ _) = True
-                                 isDataPointXY _                 = False
+                                 isDataPointXY (DataPointXY _) = True
+                                 isDataPointXY _               = False
 
+instance ChartMarker RangeMarker where
+    encodeChartMarker marker = intercalate "," [rangetype, color,"0",x,y] where
+                                 rangetype = case rangeMarkerType marker of
+                                               RangeMarkerHorizontal -> "r"
+                                               RangeMarkerVertical   -> "R"
+
+                                 color = rangeMarkerColor marker
+                                 x = show.fst $ rangeMarkerRange marker
+                                 y = show.snd $ rangeMarkerRange marker
