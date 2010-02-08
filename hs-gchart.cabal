@@ -1,5 +1,5 @@
 name: hs-gchart
-version: 0.1.1
+version: 0.2
 synopsis: Haskell wrapper for the Google Chart API
 description:
     This module is a wrapper around the Google Chart API. It exposes a rich
