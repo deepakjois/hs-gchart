@@ -92,6 +92,7 @@ module Graphics.GChart.Types (
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
        used as starting points to construct parameters when creating charts. -}
+
   defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker,
   defaultRangeMarker, defaultFinancialMarker
 ) where

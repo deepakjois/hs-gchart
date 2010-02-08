@@ -133,8 +133,6 @@ barwidthspacing bw b g = (Just (BarWidth bw), Just (Fixed (b,g)))
 relative :: Float -> Float -> BarChartWidthSpacing
 relative b g = (Nothing, Just (Relative (b,g)))
 
-
-
 -- | Shape Marker
 makeShapeMarker :: ShapeMarker
 makeShapeMarker = defaultShapeMarker
