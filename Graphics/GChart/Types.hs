@@ -49,38 +49,45 @@ module Graphics.GChart.Types (
   -- * Optional Parameters
   -- | All other parameters are optional
 
-  -- ** Chart Colors
+  -- ** Colors
+
+  -- *** Chart Colors
   ChartColors(..), Color,
 
-  -- ** Solid Fill, Linear Gradient, Linear Stripes
+  -- ** Chart Fills : Solid Fill, Linear Gradient, Linear Stripes
   ChartFills, Fill(..), FillKind(..), FillType(..),
   Offset, Width, Angle,
-  -- ** Chart Title
+
+  -- ** Labels
+
+  -- *** Chart Title
   ChartTitle(..),
 
-  -- ** Chart Legend
+  -- *** Chart Legend
   ChartLegend(..), LegendPosition(..),
 
-  -- ** Axis styles and labels
+  -- *** Pie chart and Google-o-meter labels
+  ChartLabels(..),
+
+  -- *** Axis styles and labels
   ChartAxes, Axis(..), AxisType(..), AxisLabel, AxisPosition, FontSize,
   AxisRange(..), AxisStyle(..), DrawingControl(..), AxisStyleAlignment(..),
 
-  -- ** Grid Lines
+  -- ** Styles
+
+  -- *** Bar width and spacing
+  BarChartWidthSpacing(..), BarWidth(..), BarGroupSpacing(..),
+
+  -- *** Chart Margins
+  ChartMargins(..),
+
+  -- *** Grid Lines
   ChartGrid(..),
 
-  -- ** Chart Markers
+  -- *** Shape, Range and Financial Markers
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
   ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
   RangeMarkerType(..), RangeMarker(..), FinancialMarker(..),
-
-  -- ** Pie chart and Google-o-meter labels
-  ChartLabels(..),
-
-  -- ** Chart Margins
-  ChartMargins(..),
-
-  -- ** Bar width and spacing
-  BarChartWidthSpacing(..), BarWidth(..), BarGroupSpacing(..),
 
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be

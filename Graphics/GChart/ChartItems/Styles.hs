@@ -47,8 +47,6 @@ instance ChartItem ChartGrid where
                                                                                    liftM show d,
                                                                                    liftM show e,
                                                                                    liftM show f]
--- TODO: Shape, Range, Financial Markers
-
 -- ChartItem instance for ChartMarkers
 instance ChartItem ChartMarkers where
     set markers    = updateChart $ \chart -> chart { chartMarkers = Just markers }

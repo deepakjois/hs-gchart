@@ -26,7 +26,8 @@ types and features.
 ## Getting Started
 
 These examples below are available in `examples/Examples.hs` in the source
-tarball. All examples are taken from [this article](http://24ways.org/2007/tracking-christmas-cheer-with-google-charts)
+tarball. Look at the source file for more Some examples are taken from [this
+article](http://24ways.org/2007/tracking-christmas-cheer-with-google-charts)
 
 For examples 1 and 2, the following code is common
 
@@ -153,3 +154,36 @@ Generates the following chart
 
 ![Line Graph](http://chart.apis.google.com/chart?cht=lxy&chs=800x300&chd=t:0,16.7,23.3,33.3,60,76.7,83.3,86.7,93.3,96.7,100|30,45,20,50,15,80,60,70,40,55,80|0,10,16.7,26.7,33.3|50,10,30,55,60&chtt=Projected+Christmas+Cheer+for+2007&chco=458B00,CD2626&chdl=2006|2007&chdlp=r&chxt=y,x&chxl=1:|Dec+1st|||||6th|||||||||||||||||||25th|26th|||||Dec+31st&chxr=0,0.0,100.0,50.0&chg=3.333,10.0,1.0,3.0)
 
+### Example 5 : Scatter Plot with Shape Markers
+
+The code below 
+
+    scatterPlotWithMarkers = getChartUrl $ do setChartSize 200 125
+                                              setChartType ScatterPlot
+                                              setDataEncoding simple
+                                              addChartDataXY dataSeries5
+                                              addAxis $ makeAxis { axisType = AxisBottom,
+                                                                   axisLabels = Just $ blanks 1 ++ ["1","2","3","4","5"] }
+                                              addAxis $ makeAxis { axisType = AxisLeft,
+                                                                   axisLabels = Just $ blanks 1 ++ ["50","100"] }
+                                              setGrid $ makeGrid { xAxisStep = 20, yAxisStep = 25 }
+     
+                                              addShapeMarker $ makeShapeMarker { shapeType  = ShapeSquare
+                                                                               , shapeColor = "ff0000"
+                                                                               , shapeSize  = 10 }
+     
+    -- Reverse engineering sample data from webpage
+    dataSeries5 :: [(Int,Int)]
+    dataSeries5 = zip xseries yseries where
+                 xseries = map encSimpleReverse "984sttvuvkQIBLKNCAIipr3z9"
+                 yseries = map encSimpleReverse "DEJPgq0uov17_zwopQOD"
+     
+    encSimpleReverse :: Char -> Int
+    encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = (ord c - ord 'A')
+                       | ord c >= ord 'a' && ord c <= ord 'z' = 26 + (ord c - ord 'a')
+                       | ord c >= ord '0' && ord c <= ord '9' = 52 + (ord c - ord '0')
+                       | otherwise = -1
+
+Generates the following chart
+
+![Scatter Plot with Shape Markers](http://chart.apis.google.com/chart?cht=s&chs=200x125&chd=s:984sttvuvkQIBLKNCAIi,DEJPgq0uov17_zwopQOD&chxt=x,y&chxl=0:||1|2|3|4|5|1:||50|100&chg=20.0,25.0&chm=s,ff0000,-1,-1,10)
