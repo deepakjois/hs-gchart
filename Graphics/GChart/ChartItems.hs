@@ -5,6 +5,8 @@ module Graphics.GChart.ChartItems (
   addColorToChart,
   addFillToChart,
   addAxisToChart,
+  addMarker,
+  getDataSetIdx,
   getParams
 ) where
 
@@ -46,6 +48,20 @@ addAxisToChart axis = do chart <- get
                              new = old ++ [axis]
                          set new
 
+getDataSetIdx = do chart <- get
+                   return $ dataSetLength chart
+
+dataSetLength chart = case chartData chart of
+                        Simple   d -> length d - 1
+                        Text     d -> length d - 1
+                        Extended d -> length d - 1
+
+addMarker :: ChartMarker m => m -> ChartM ()
+addMarker marker = do chart <- get
+                      let old = fromMaybe [] $ chartMarkers chart
+                          new = old ++ [AnyChartMarker marker]
+                      set new
+
 -- URL Conversion
 encodeMaybe Nothing = [("","")]
 encodeMaybe (Just x)  = encode x
@@ -60,6 +76,7 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartLegend  chart,
                                                  encodeMaybe $ chartAxes    chart,
                                                  encodeMaybe $ chartGrid    chart,
+                                                 encodeMaybe $ chartMarkers chart,
                                                  encodeMaybe $ chartLabels  chart,
                                                  encodeMaybe $ chartMargins chart,
                                                  encodeMaybe $ barChartWidthSpacing chart]

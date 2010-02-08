@@ -40,6 +40,8 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
   setChartTitleWithColor, setChartTitleWithColorAndFontSize, addChartData,
   addChartDataXY, setColors, addColor, addFill, setLegend, addAxis, setGrid,
   setLabels, setBarWidthSpacing,
+  makeShapeMarker, makeRangeMarker, makeFinancialMarker,
+  addShapeMarker, addRangeMarker, addFinancialMarker,
   -- * Retrieving Chart data
   getChartData, getChartUrl, convertToUrl,
 
@@ -131,6 +133,20 @@ barwidthspacing bw b g = (Just (BarWidth bw), Just (Fixed (b,g)))
 relative :: Float -> Float -> BarChartWidthSpacing
 relative b g = (Nothing, Just (Relative (b,g)))
 
+
+
+-- | Shape Marker
+makeShapeMarker :: ShapeMarker
+makeShapeMarker = defaultShapeMarker
+
+-- | Range Marker
+makeRangeMarker :: RangeMarker
+makeRangeMarker = defaultRangeMarker
+
+-- | Financial Marker
+makeFinancialMarker :: FinancialMarker
+makeFinancialMarker = defaultFinancialMarker
+
 {- Setting Chart Parameters-}
 
 -- | Set the chart size by passing the width and the height in pixels
@@ -210,6 +226,32 @@ addAxis = addAxisToChart
 setGrid :: ChartGrid -> ChartM ()
 setGrid = set
 
+-- | Adds a shape marker. Use `makeShapeMarker` smart constructor when calling
+-- this function If value of data set index is not specified when using
+-- 'makeShapeMarker', it automatically adds a data index to refer to the latest
+-- data set
+addShapeMarker :: ShapeMarker -> ChartM ()
+addShapeMarker marker | (shapeDataSetIdx marker) > -1 = addMarker marker
+                      | otherwise = do idx <- getDataSetIdx
+                                       let newmarker = marker { shapeDataSetIdx = idx }
+                                       addMarker marker
+
+-- | Adds a range marker. You can use 'makeRangeMarker' smart constructor when
+-- calling this function
+addRangeMarker :: RangeMarker -> ChartM ()
+addRangeMarker marker = addMarker marker
+
+-- | Adds a financial marker. User `makeFinancialMarker` smart constructor when
+-- calling this function. If value of data set index is not specified when using
+-- 'makeFinancialMarker', it automatically adds a data index to refer to the latest
+-- data set
+addFinancialMarker :: FinancialMarker -> ChartM ()
+addFinancialMarker marker | (financeDataSetIdx marker) > -1 = addMarker marker
+                          | otherwise = do idx <- getDataSetIdx
+                                           let newmarker = marker { financeDataSetIdx = idx }
+                                           addMarker marker
+
+
 -- | Set labels for the chart
 setLabels :: [String] -> ChartM ()
 setLabels = set . ChartLabels
@@ -234,3 +276,4 @@ convertToUrl :: Chart -> String
 convertToUrl chart = baseURL ++ intercalate "&" urlparams where
     baseURL = "http://chart.apis.google.com/chart?"
     urlparams = [urlEnc a ++ "=" ++ urlEnc b | (a,b) <- getParams chart]
+

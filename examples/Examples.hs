@@ -1,5 +1,5 @@
 import Graphics.GChart
-
+import Data.Char(ord)
 {-
 
 Some examples to demonstrate usage of GChart.
@@ -101,6 +101,21 @@ bargraphRelativeSpacing = getChartUrl $ do setChartSize 190 125
                                            setColors ["4d89f9","000000"]
                                            setBarWidthSpacing $ relative 0.5 1.5
 
+
+scatterPlotWithMarkers = getChartUrl $ do setChartSize 200 125
+                                          setChartType ScatterPlot
+                                          setDataEncoding simple
+                                          addChartDataXY dataSeries5
+                                          addAxis $ makeAxis { axisType = AxisBottom,
+                                                               axisLabels = Just $ blanks 1 ++ ["1","2","3","4","5"] }
+                                          addAxis $ makeAxis { axisType = AxisLeft,
+                                                               axisLabels = Just $ blanks 1 ++ ["50","100"] }
+                                          setGrid $ makeGrid { xAxisStep = 20, yAxisStep = 25 }
+
+                                          addShapeMarker $ makeShapeMarker { shapeType  = ShapeSquare
+                                                                           , shapeColor = "ff0000"
+                                                                           , shapeSize  = 10 }
+
 blanks x = take x $ repeat ""
 
 dataSeries1 :: [Int]
@@ -115,6 +130,11 @@ dataSeries3 = zip [0,16.7,23.3,33.3,60,76.7,83.3,86.7,93.3,96.7,100] [30,45,20,5
 dataSeries4 :: [(Float,Float)]
 dataSeries4 = zip [0,10,16.7,26.7,33.3] [50,10,30,55,60]
 
+dataSeries5 :: [(Int,Int)]
+dataSeries5 = zip xseries yseries where
+             xseries = map encSimpleReverse "984sttvuvkQIBLKNCAIipr3z9"
+             yseries = map encSimpleReverse "DEJPgq0uov17_zwopQOD"
+
 labelSeries1 = ["Egg nog",
                 "Christmas Ham",
                 "Milk (not including egg nog)",
@@ -125,6 +145,12 @@ labelSeries1 = ["Egg nog",
                 "Various Other Foods",
                 "Snacks"]
 
+encSimpleReverse :: Char -> Int
+encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = (ord c - ord 'A')
+                   | ord c >= ord 'a' && ord c <= ord 'z' = 26 + (ord c - ord 'a')
+                   | ord c >= ord '0' && ord c <= ord '9' = 52 + (ord c - ord '0')
+                   | otherwise = -1
+
 main = do putStrLn christmasPie
           putStrLn barGraph
           putStrLn linexyGraph1
@@ -132,3 +158,4 @@ main = do putStrLn christmasPie
           putStrLn bargraph2
           putStrLn bargraphAutoSpacing
           putStrLn bargraphRelativeSpacing
+          putStrLn scatterPlotWithMarkers
