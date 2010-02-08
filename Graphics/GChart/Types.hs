@@ -54,7 +54,7 @@ module Graphics.GChart.Types (
   -- *** Chart Colors
   ChartColors(..), Color,
 
-  -- ** Chart Fills : Solid Fill, Linear Gradient, Linear Stripes
+  -- *** Chart Fills : Solid Fill, Linear Gradient, Linear Stripes
   ChartFills, Fill(..), FillKind(..), FillType(..),
   Offset, Width, Angle,
 
