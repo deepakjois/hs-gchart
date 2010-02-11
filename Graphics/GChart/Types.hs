@@ -20,8 +20,6 @@ Some parameters are not supported yet :
 
 - Fill area <http://code.google.com/apis/chart/colors.html#fill_area_marker>
 
-- Line Styles <http://code.google.com/apis/chart/styles.html#line_styles>
-
 -}
 
 module Graphics.GChart.Types (
@@ -79,6 +77,9 @@ module Graphics.GChart.Types (
   -- *** Chart Margins
   ChartMargins(..),
 
+  -- *** Line Styles
+  ChartLineStyles(..), LineStyle(..),
+
   -- *** Grid Lines
   ChartGrid(..),
 
@@ -95,7 +96,7 @@ module Graphics.GChart.Types (
        used as starting points to construct parameters when creating charts. -}
 
   defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker,
-  defaultRangeMarker, defaultFinancialMarker
+  defaultRangeMarker, defaultFinancialMarker, defaultLineStyle
 ) where
 
 import Control.Monad.State
@@ -402,6 +403,14 @@ data BarGroupSpacing = Fixed (Int, Int)          -- ^ Fixed spacing values in pi
 -- | Bar Width and Spacing.
 type BarChartWidthSpacing =  (Maybe BarWidth, Maybe BarGroupSpacing)
 
+-- | Line Style. Applicable for line charts
+data LineStyle =  LS { lineStyleThickness :: Float    -- ^ Thickness
+                     , lineStyleLineSegment :: Float  -- ^ Length of Line Segment
+                     , lineStyleBlankSegment :: Float -- ^ Length of Blank Segment
+                      } deriving Show
+
+type ChartLineStyles = [LineStyle]
+
 -- | Data type for the chart
 data Chart =
     Chart {
@@ -419,6 +428,7 @@ data Chart =
     , chartMargins :: Maybe ChartMargins
     , barChartWidthSpacing :: Maybe BarChartWidthSpacing
     , pieChartOrientation  :: Maybe PieChartOrientation
+    , chartLineStyles      :: Maybe ChartLineStyles
     } deriving Show
 
 
@@ -462,7 +472,8 @@ defaultChart =
             chartMargins = Nothing,
             chartMarkers = Nothing,
             barChartWidthSpacing = Nothing,
-            pieChartOrientation = Nothing
+            pieChartOrientation = Nothing,
+            chartLineStyles = Nothing
           }
 
 -- | Default value for an axis
@@ -509,3 +520,9 @@ defaultFinancialMarker = FM { financeColor = "0000DD",
                               financeDataPoint = DataPointEvery,
                               financeSize = 5,
                               financePriority = 0 }
+
+-- | Default value of a line style
+defaultLineStyle = LS { lineStyleThickness = 1,
+                        lineStyleLineSegment = 1,
+                        lineStyleBlankSegment = 0 }
+

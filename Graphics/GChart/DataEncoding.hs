@@ -22,7 +22,7 @@ encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = (ord c - ord 'A')
                    | ord c >= ord 'a' && ord c <= ord 'z' = 26 + (ord c - ord 'a')
                    | ord c >= ord '0' && ord c <= ord '9' = 52 + (ord c - ord '0')
                    | otherwise = -1
- 
+
 encodeText datas = "t:" ++ intercalate "|" (map encData datas) where
     encData = intercalate "," . map encDatum
     encDatum i | i >= 0 && i <= 100 = showDecimal i

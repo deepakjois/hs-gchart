@@ -7,6 +7,7 @@ module Graphics.GChart.ChartItems (
   addAxisToChart,
   addMarker,
   getDataSetIdx,
+  addLineStyleToChart,
   getParams
 ) where
 
@@ -62,6 +63,12 @@ addMarker marker = do chart <- get
                           new = old ++ [AnyChartMarker marker]
                       set new
 
+addLineStyleToChart :: LineStyle -> ChartM ()
+addLineStyleToChart style = do chart <- get
+                               let old = fromMaybe [] $ chartLineStyles chart
+                                   new = old ++ [style]
+                               set new
+
 -- URL Conversion
 encodeMaybe Nothing = [("","")]
 encodeMaybe (Just x)  = encode x
@@ -80,5 +87,6 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartLabels  chart,
                                                  encodeMaybe $ chartMargins chart,
                                                  encodeMaybe $ barChartWidthSpacing chart,
-                                                 encodeMaybe $ pieChartOrientation chart]
+                                                 encodeMaybe $ pieChartOrientation chart,
+                                                 encodeMaybe $ chartLineStyles chart]
 

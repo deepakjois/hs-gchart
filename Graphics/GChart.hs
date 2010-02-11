@@ -41,7 +41,8 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
   addChartDataXY, setColors, addColor, addFill, setLegend, addAxis, setGrid,
   setLabels, setBarWidthSpacing,
   makeShapeMarker, makeRangeMarker, makeFinancialMarker,
-  addShapeMarker, addRangeMarker, addFinancialMarker,
+  addShapeMarker, addRangeMarker, addFinancialMarker, setPieChartOrientation,
+  addLineStyle,
   -- * Retrieving Chart data
   getChartData, getChartUrl, convertToUrl,
 
@@ -50,7 +51,7 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
   -- parameters more conveniently
   solid, legend, legendWithPosition, makeAxis, makeGrid,
   simple, text, extended, automatic, automaticWithSpacing,
-  barwidth, barwidthspacing, relative
+  barwidth, barwidthspacing, relative, makeLineStyle
 ) where
 
 import Graphics.GChart.Types
@@ -144,6 +145,10 @@ makeRangeMarker = defaultRangeMarker
 -- | Financial Marker
 makeFinancialMarker :: FinancialMarker
 makeFinancialMarker = defaultFinancialMarker
+
+-- | Line Style
+makeLineStyle :: LineStyle
+makeLineStyle = defaultLineStyle
 
 {- Setting Chart Parameters-}
 
@@ -262,6 +267,10 @@ setBarWidthSpacing = set
 -- | Set pie chart orientation in radians
 setPieChartOrientation :: Float -> ChartM ()
 setPieChartOrientation = set . PCO
+
+-- | Add line style
+addLineStyle :: LineStyle -> ChartM()
+addLineStyle = addLineStyleToChart
 
 {- Retrieving Chart Data -}
 

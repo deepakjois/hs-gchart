@@ -116,6 +116,15 @@ scatterPlotWithMarkers = getChartUrl $ do setChartSize 200 125
                                                                            , shapeColor = "ff0000"
                                                                            , shapeSize  = 10 }
 
+lineChartWithLineStyles = getChartUrl $ do setChartSize 200 125
+                                           setChartType Line
+                                           setDataEncoding simple
+
+                                           addChartData $ map encSimpleReverse "93zyvneTTOMJMLIJFHEAECFJGHDBFCFIERcgnpy45879"
+                                           addLineStyle $ makeLineStyle { lineStyleThickness = 3, lineStyleLineSegment = 6, lineStyleBlankSegment = 3 }
+
+                                           addChartData $ map encSimpleReverse "IJKNUWUWYdnswz047977315533zy1246872tnkgcaZQONHCECAAAAEII"
+                                           addLineStyle $ makeLineStyle { lineStyleThickness = 1, lineStyleLineSegment = 1, lineStyleBlankSegment = 0 }
 blanks x = take x $ repeat ""
 
 dataSeries1 :: [Int]
@@ -159,3 +168,4 @@ main = do putStrLn christmasPie
           putStrLn bargraphAutoSpacing
           putStrLn bargraphRelativeSpacing
           putStrLn scatterPlotWithMarkers
+          putStrLn lineChartWithLineStyles

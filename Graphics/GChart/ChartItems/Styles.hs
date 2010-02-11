@@ -34,7 +34,12 @@ instance ChartItem ChartMargins where
                      Just (x,y) -> show x ++ "," ++ show y
                      _          -> ""
 
--- TODO: Line Styles
+-- Line Styles
+instance ChartItem ChartLineStyles where
+    set styles = updateChart $ \chart -> chart { chartLineStyles = Just styles }
+
+    encode styles = asList ("chls", intercalate "|" $ map encodeStyle styles) where
+                     encodeStyle (LS a b c) = intercalate "," $ map showFloat [a, b, c]
 
 -- Grid Lines
 instance ChartItem ChartGrid where
