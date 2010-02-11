@@ -108,3 +108,9 @@ instance ChartMarker FinancialMarker where
                                  idx  = show $ financeDataSetIdx marker
                                  size = show $ financeSize marker
                                  priority = financePriority marker
+
+-- Pie Chart Orientation
+instance ChartItem PieChartOrientation where
+    set orientation = updateChart $ \chart -> chart { pieChartOrientation = Just orientation }
+
+    encode (PCO orientation) = asList ("chp", show orientation)

@@ -259,6 +259,10 @@ setLabels = set . ChartLabels
 setBarWidthSpacing :: BarChartWidthSpacing -> ChartM ()
 setBarWidthSpacing = set
 
+-- | Set pie chart orientation in radians
+setPieChartOrientation :: Float -> ChartM ()
+setPieChartOrientation = set . PCO
+
 {- Retrieving Chart Data -}
 
 -- | Extracts the data out of the monad and returns a value of type 'Chart'

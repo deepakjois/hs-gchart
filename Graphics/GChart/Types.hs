@@ -22,8 +22,6 @@ Some parameters are not supported yet :
 
 - Line Styles <http://code.google.com/apis/chart/styles.html#line_styles>
 
-- Pie chart orientation <http://code.google.com/apis/chart/types.html#pie_charts>
-
 -}
 
 module Graphics.GChart.Types (
@@ -88,6 +86,9 @@ module Graphics.GChart.Types (
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
   ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
   RangeMarkerType(..), RangeMarker(..), FinancialMarker(..),
+
+  -- *** Pie Chart Orientation
+  PieChartOrientation(..),
 
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
@@ -371,6 +372,9 @@ type ChartMarkers = [AnyChartMarker]
 -- Specify a list with a single label for Google-o-meter
 data ChartLabels = ChartLabels [String] deriving Show
 
+-- | Pie Chart Orientation. Applicable only to Pie Charts,
+data PieChartOrientation = PCO Float deriving Show
+
 -- | Chart Margins. All margin values specified are the minimum margins around
 -- the plot area, in pixels.
 -- <http://code.google.com/apis/chart/styles.html#chart_margins>
@@ -414,6 +418,7 @@ data Chart =
     , chartLabels  :: Maybe ChartLabels
     , chartMargins :: Maybe ChartMargins
     , barChartWidthSpacing :: Maybe BarChartWidthSpacing
+    , pieChartOrientation  :: Maybe PieChartOrientation
     } deriving Show
 
 
@@ -456,7 +461,8 @@ defaultChart =
             chartLabels = Nothing,
             chartMargins = Nothing,
             chartMarkers = Nothing,
-            barChartWidthSpacing = Nothing
+            barChartWidthSpacing = Nothing,
+            pieChartOrientation = Nothing
           }
 
 -- | Default value for an axis
