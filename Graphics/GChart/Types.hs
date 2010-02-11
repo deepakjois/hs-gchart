@@ -1,24 +1,38 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-| This module contains the Haskell data model for the Google Chart API.
 
-Details about the parameters can be found on the Google Chart API website :
-<http://code.google.com/apis/chart/>
+More details about the API and parameters can be found at :
+<http://code.google.com/apis/chart/image_charts.html>
 
-Some chart types are not supported yet :
+Some chart types are not supported yet:
 
-- Maps <http://code.google.com/apis/chart/types.html#maps>
+- Box Charts <http://code.google.com/apis/chart/docs/gallery/compound_charts.html#box_charts>
 
-- QRCodes <http://code.google.com/apis/chart/types.html#qrcodes>
+- Candlestick Charts <http://code.google.com/apis/chart/docs/gallery/compound_charts.html#candlestick_charts>
 
-Some parameters are not supported yet :
+- Compound Charts <http://code.google.com/apis/chart/docs/gallery/compound_charts.html>
 
-- Data Scaling <http://code.google.com/apis/chart/formats.html#data_scaling>
+- Dynamic Icons <http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html>
 
-- Bar chart zero line  <http://code.google.com/apis/chart/styles.html#zero_line>
+- Formula Chart <http://code.google.com/apis/chart/docs/gallery/formulas.html>
 
-- Data point labels <http://code.google.com/apis/chart/labels.html#data_point_labels>
+- Map Charts <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
 
-- Fill area <http://code.google.com/apis/chart/colors.html#fill_area_marker>
+- QR Codes <http://code.google.com/apis/chart/docs/gallery/qr_codes.html>
+
+Some parameters are not supported yet:
+
+- Chart Data Scaling <http://code.google.com/apis/chart/docs/data_formats.html#data_scaling>
+
+- Text and Data Value Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_data_point_labels>
+
+- QR code output encoding <http://code.google.com/apis/chart/docs/gallery/qr_codes.html>
+
+- Bar chart zero line <http://code.google.com/apis/chart/docs/gallery/bar_charts.html#chp>
+
+- Dynamic icon type <http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html>
+
+- Geographic area <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
 
 -}
 
@@ -32,64 +46,61 @@ module Graphics.GChart.Types (
   -- | This type represents the Chart
   Chart(..),
 
-  -- * Required Parameters
-  -- | These parameters are required for all charts
+  -- * Chart Parameters
+  {-| Some of these parameters behave differently depending on the chart type;
 
-  -- ** Chart Size
-  ChartSize(..),
-  -- ** Chart Data
-  ChartData(..),
-  -- ** Chart Type
-  ChartType(..),
+      More details : <http://code.google.com/apis/chart/docs/chart_params.html>
+  -}
 
-  -- * Optional Parameters
-  -- | All other parameters are optional
 
-  -- ** Colors
+  -- ** Bar Width and Spacing
+  BarChartWidthSpacing(..), BarWidth(..), BarGroupSpacing(..),
 
-  -- *** Chart Colors
+  -- ** Series Colors
   ChartColors(..), Color,
 
-  -- *** Chart Fills : Solid Fill, Linear Gradient, Linear Stripes
+  -- ** Chart Data
+  ChartData(..),
+
+  -- ** Chart Legend Text and Style
+  ChartLegend(..), LegendPosition(..),
+
+  -- ** Solid, Gradient and Striped Fills
   ChartFills, Fill(..), FillKind(..), FillType(..),
   Offset, Width, Angle,
 
-  -- ** Labels
+  -- ** Grid Lines
+  ChartGrid(..),
 
-  -- *** Chart Title
-  ChartTitle(..),
-
-  -- *** Chart Legend
-  ChartLegend(..), LegendPosition(..),
-
-  -- *** Pie chart and Google-o-meter labels
+  -- ** Pie chart labels, Google-o-meter label (TODO: QR code data, Formula TeX data)
   ChartLabels(..),
-
-  -- *** Axis styles and labels
-  ChartAxes, Axis(..), AxisType(..), AxisLabel, AxisPosition, FontSize,
-  AxisRange(..), AxisStyle(..), DrawingControl(..), AxisStyleAlignment(..),
-
-  -- ** Styles
-
-  -- *** Bar width and spacing
-  BarChartWidthSpacing(..), BarWidth(..), BarGroupSpacing(..),
-
-  -- *** Chart Margins
-  ChartMargins(..),
 
   -- *** Line Styles
   ChartLineStyles(..), LineStyle(..),
-
-  -- *** Grid Lines
-  ChartGrid(..),
 
   -- *** Shape, Range and Financial Markers
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
   ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
   RangeMarkerType(..), RangeMarker(..), FinancialMarker(..),
 
+  -- *** Chart Margins
+  ChartMargins(..),
+
   -- *** Pie Chart Orientation
   PieChartOrientation(..),
+
+  -- ** Chart Size
+  ChartSize(..),
+
+  -- ** Chart Type
+  ChartType(..),
+
+  -- *** Chart Title and Style
+  ChartTitle(..),
+
+  -- *** Visible Axis Axis styles and labels
+  ChartAxes, Axis(..), AxisType(..), AxisLabel, AxisPosition, FontSize,
+  AxisRange(..), AxisStyle(..), DrawingControl(..), AxisStyleAlignment(..),
 
   -- * Default Values
   {-| These functions return default values for complex parameters, which can be
@@ -105,7 +116,7 @@ import Control.Monad.State
 data ChartSize = Size Int Int deriving Show
 
 
--- | Chart type <http://code.google.com/apis/chart/types.html>
+-- | Chart type
 data ChartType
   = Line                  -- ^ Line Chart
   | Sparklines            -- ^ Sparklines
@@ -124,7 +135,6 @@ data ChartType
     deriving Show
 
 -- | Title of the chart
--- | <http://code.google.com/apis/chart/labels.html#chart_title>
 data ChartTitle =
     ChartTitle {
       titleStr ::String               -- ^ Title
@@ -134,7 +144,6 @@ data ChartTitle =
 
 -- | Chart data along with encoding. XY data for is encoded a pair of
 -- | consecutive data sets
--- | <http://code.google.com/apis/chart/formats.html>
 data ChartData
   = Simple [[Int]]   -- ^ lets you specify integer values from 0-61, inclusive
   | Text [[Float]]   -- ^ supports floating point numbers from 0-100, inclusive
@@ -145,11 +154,10 @@ data ChartData
 type Color = String
 
 -- | Chart colors specified as a list of 'Color' values for each data point.
--- <http://code.google.com/apis/chart/colors.html#chart_colors>
 data ChartColors = ChartColors [Color] deriving Show
 
 
--- | Specifies the angle of the gradient between 0 (horizontal) and 90
+-- | Angle of the gradient between 0 (horizontal) and 90
 -- (vertical). Applicable to 'LinearGradient' and 'LinearStripes'
 type Angle = Float
 
@@ -164,9 +172,9 @@ type Width = Float
 
 -- | Specifies the kind of fill
 data FillKind
-    = Solid Color -- ^ Solid Fill <http://code.google.com/apis/chart/colors.html#solid_fill>
-    | LinearGradient Angle [(Color,Offset)] -- ^ Linear Gradient <http://code.google.com/apis/chart/colors.html#linear_gradient>
-    | LinearStripes Angle [(Color,Width)]  -- ^ Linear Stripes <http://code.google.com/apis/chart/colors.html#linear_stripes>
+    = Solid Color -- ^ Solid Fill
+    | LinearGradient Angle [(Color,Offset)] -- ^ Linear Gradient
+    | LinearStripes Angle [(Color,Width)]  -- ^ Linear Stripes
       deriving Show
 
 -- | Specifies the type of fill
@@ -192,12 +200,10 @@ data LegendPosition
     | LegendLeft     -- ^ Right of chart
       deriving Show
 
--- | Specifies a chart legend
--- <http://code.google.com/apis/chart/labels.html#chart_legend>
+-- | Chart legend
 data ChartLegend = Legend [String] (Maybe LegendPosition) deriving Show
 
 -- | Type of 'Axis'
--- <http://code.google.com/apis/chart/labels.html#axis_type>
 data AxisType
     = AxisBottom -- ^ Bottom x-axis
     | AxisTop    -- ^ Top x-axis
@@ -206,10 +212,9 @@ data AxisType
       deriving Show
 
 -- | 'Axis' Labels.
--- <http://code.google.com/apis/chart/labels.html#axis_labels>
 type AxisLabel = String
 
-{-| 'Axis' Label Positions. <http://code.google.com/apis/chart/labels.html#axis_label_positions>
+{-| 'Axis' Label Positions.
 
 Labels with a specified position of 0 are placed at the bottom of the y- or
 r-axis, or at the left of the x- or t-axis.
@@ -220,7 +225,7 @@ r-axis, or at the right of the x- or t-axis.
 -}
 type AxisPosition = Float
 
-{-| 'Axis' Range <http://code.google.com/apis/chart/labels.html#axis_range>
+{-| 'Axis' Range
 
 The range is specifies with a tuple containing the start and end values. An
 optional interval value can be specified.
@@ -245,16 +250,14 @@ data DrawingControl
     | DrawLinesTicks -- ^ Draw axis lines and tick marks
       deriving (Show,Eq)
 
--- | Specify 'Axis' style
--- <http://code.google.com/apis/chart/labels.html#axis_styles>
+-- | 'Axis' style
 data AxisStyle = Style { axisColor :: Color,
                          axisFontSize :: Maybe FontSize,
                          axisStyleAlign :: Maybe AxisStyleAlignment,
                          axisDrawingControl :: Maybe DrawingControl,
                          tickMarkColor      :: Maybe Color } deriving (Show,Eq)
 
--- | Specify an axis for chart.
--- <http://code.google.com/apis/chart/labels.html#axis_styles>
+-- | Visible axis
 data Axis = Axis { axisType :: AxisType,
                    axisLabels :: Maybe [AxisLabel],
                    axisPositions :: Maybe [AxisPosition],
@@ -265,7 +268,6 @@ data Axis = Axis { axisType :: AxisType,
 type ChartAxes = [Axis]
 
 -- | Grid Lines for Chart
--- <http://code.google.com/apis/chart/styles.html#grid>
 data ChartGrid =
     ChartGrid {
       xAxisStep :: Float -- ^ x-axis step size (0-100)
@@ -378,7 +380,6 @@ data PieChartOrientation = PCO Float deriving Show
 
 -- | Chart Margins. All margin values specified are the minimum margins around
 -- the plot area, in pixels.
--- <http://code.google.com/apis/chart/styles.html#chart_margins>
 data ChartMargins =
     ChartMargins {
       leftMargin   :: Int                -- ^ Left margin around plot area

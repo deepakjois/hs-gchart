@@ -3,26 +3,15 @@
 
 Import this module to generate charts using the Google Chart API.
 
-For more examples, refer to @Examples.hs@ in the source tarball, or download it
-directly from Github : <http://github.com/deepakjois/hs-gchart/blob/master/examples/Examples.hs>.
-
-For documentation regarding the full data model, refer to
-"Graphics.GChart.Types".
-
 For more information about the Google Chart API, refer to
-<http://code.google.com/apis/chart/>
 
--}
-module Graphics.GChart (
-  module Graphics.GChart.Types,
+- Chart API Intro <http://code.google.com/apis/chart/image_charts.html>
 
-  -- * Setting Chart Parameters
-  {-|
+- Getting Started <http://code.google.com/apis/chart/docs/making_charts.html>
 
-Use these functions to set the parameters of the chart.
+For documentation full Haskell data model, refer to "Graphics.GChart.Types".
 
-These functions must be called inside a @do@ block, which can then be passed
-onto 'getChartUrl' or 'getChartData'.  For e.g, here is a simple pie chart function
+Here is an example to use the functions in the module to generate a chart URL :
 
 @
 generatePieChart = getChartUrl $ do setChartSize 640 400
@@ -34,25 +23,21 @@ generatePieChart = getChartUrl $ do setChartSize 640 400
                                  setLabels $ [\"Test 1\", \"Test 2\", \"Test 3\", \"Test 4\", \"Test 5\"]
 @
 
+For examples, refer to @Examples.hs@ in the source tarball, or download it
+directly from Github :
+<http://github.com/deepakjois/hs-gchart/blob/master/examples/Examples.hs>.
+
+
+The module constists of:
+
+- Smart Constructors - to make it convenient to construct data types
+
+- Functions to set chart data
+
+- Functions to retrieve chart data in form of URL or Haskell data type
+
 -}
-
-  setChartSize, setChartType, setDataEncoding, setChartTitle,
-  setChartTitleWithColor, setChartTitleWithColorAndFontSize, addChartData,
-  addChartDataXY, setColors, addColor, addFill, setLegend, addAxis, setGrid,
-  setLabels, setBarWidthSpacing,
-  makeShapeMarker, makeRangeMarker, makeFinancialMarker,
-  addShapeMarker, addRangeMarker, addFinancialMarker, setPieChartOrientation,
-  addLineStyle,
-  -- * Retrieving Chart data
-  getChartData, getChartUrl, convertToUrl,
-
-  -- * Smart Constructors
-  -- | These functions can be used to construct chart
-  -- parameters more conveniently
-  solid, legend, legendWithPosition, makeAxis, makeGrid,
-  simple, text, extended, automatic, automaticWithSpacing,
-  barwidth, barwidthspacing, relative, makeLineStyle
-) where
+module Graphics.GChart  where
 
 import Graphics.GChart.Types
 import Graphics.GChart.ChartItems
@@ -60,7 +45,7 @@ import Graphics.GChart.DataEncoding
 
 import Data.List
 
-{- Smart Constructors -}
+-- * Smart Constructors
 
 -- | generates a 'Solid' fill from a hex color value
 solid = Fill . Solid
@@ -150,7 +135,7 @@ makeFinancialMarker = defaultFinancialMarker
 makeLineStyle :: LineStyle
 makeLineStyle = defaultLineStyle
 
-{- Setting Chart Parameters-}
+-- * Setting Chart Parameters
 
 -- | Set the chart size by passing the width and the height in pixels
 -- For e.g : @setChartSize 320 200@
@@ -174,7 +159,7 @@ setChartTitleWithColorAndFontSize :: String -> Color -> FontSize -> ChartM ()
 setChartTitleWithColorAndFontSize title color fontsize =
     set $ ChartTitle title (Just color) (Just fontsize)
 
-{-| Use it with 'simple', 'text' or 'extended' to specify the encoding. For e.g
+{-| Use this with 'simple', 'text' or 'extended' to specify the encoding. For e.g
 
 @
 setDataEncoding simple
@@ -272,7 +257,7 @@ setPieChartOrientation = set . PCO
 addLineStyle :: LineStyle -> ChartM()
 addLineStyle = addLineStyleToChart
 
-{- Retrieving Chart Data -}
+-- * Retrieving Chart Data
 
 -- | Extracts the data out of the monad and returns a value of type 'Chart'
 getChartData :: ChartM () -> Chart
