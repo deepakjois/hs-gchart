@@ -9,7 +9,7 @@ wrapper, however it has not been updated in a long while. GChart improves upon
 that effort by trying to design a more elegant API, and supporting more chart
 types and features.
 
-[GoogleChart]: http://hackage.haskell.org/packages/archive/GoogleChart/0.3/doc/html/Graphics-Google-Chart.html
+[GoogleChart]: http://hackage.haskell.org/packages/archive/GoogleChart/0.2/doc/html/Graphics-Google-Chart.html
 
 ## Installation
 
@@ -19,7 +19,7 @@ types and features.
 
 * [API functions reference](http://hackage.haskell.org/package/hs-gchart)
 
-* [Haskell data types reference](http://hackage.haskell.org/packages/archive/hs-gchart/0.2/doc/html/Graphics-GChart-Types.html)
+* [Haskell data types reference](http://hackage.haskell.org/packages/archive/hs-gchart/0.3/doc/html/Graphics-GChart-Types.html)
 
 * [Google Chart API]
 
