@@ -1,6 +1,8 @@
 FEATURES
 ========
 * Implement remaining chart types and params (see docs for Types.hs for list)
+* Fix Data Encoding to be able to take only width parameter
+* Add smart constructors for gradients and stripes
 * Update documentation to match the new docs on API
   - Add Chart Gallery charts into examples.hs
 * Implement new fixes including data encoding and new charts
