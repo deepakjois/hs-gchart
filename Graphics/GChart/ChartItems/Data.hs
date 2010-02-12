@@ -22,3 +22,18 @@ instance ChartDataEncodable Int where
 instance ChartDataEncodable Float where
     addEncodedChartData d cd@(Text old) = Text $ old ++ [d]
     addEncodedChartData d _             = error "Invalid type for specified encoding. Use int data"
+
+
+instance ChartItem QREncoding where
+    set qrEnc = updateChart $ \chart -> chart { qrEncoding = Just qrEnc }
+
+    encode qrEnc = asList ("choe", encStr)
+                   where encStr = case qrEnc of
+                                    UTF8     -> "UTF-8"
+                                    Shift_JIS -> "Shift_JIS"
+                                    ISO8859_1  -> "ISO-8859-1"
+
+instance ChartItem ChartLabelData where
+    set chld = updateChart $ \chart -> chart { chartLabelData = Just chld }
+
+    encode (QRLabelData ec m) = asList ("chld", concat [show ec, "|", show m])

@@ -91,5 +91,7 @@ getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartMargins chart,
                                                  encodeMaybe $ barChartWidthSpacing chart,
                                                  encodeMaybe $ pieChartOrientation chart,
-                                                 encodeMaybe $ chartLineStyles chart]
+                                                 encodeMaybe $ chartLineStyles chart,
+                                                 encodeMaybe $ qrEncoding chart,
+                                                 encodeMaybe $ chartLabelData chart]
 
