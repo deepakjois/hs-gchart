@@ -80,11 +80,14 @@ module Graphics.GChart (
    addRangeMarker                   ,
    addFinancialMarker               ,
    setLabels                        ,
+   setLabel                         ,
    setBarWidthSpacing               ,
    setPieChartOrientation           ,
    addLineStyle                     ,
    setFormula                       ,
-
+   setQREncoding                    ,
+   setQRWidth                       ,
+   setQRErrorCorrection             ,
   -- * Retrieving Chart Data
 
   getChartData,
@@ -302,6 +305,9 @@ addFinancialMarker marker | financeDataSetIdx marker > (- 1) = addMarker marker
 setLabels :: [String] -> ChartM ()
 setLabels = set . ChartLabels
 
+-- | Set label for a chart
+setLabel :: String -> ChartM ()
+setLabel label = set $ ChartLabels [label]
 
 -- | Set bar and width spacing
 setBarWidthSpacing :: BarChartWidthSpacing -> ChartM ()
@@ -319,6 +325,21 @@ addLineStyle = addLineStyleToChart
 setFormula :: String -> ChartM ()
 setFormula formula = setLabels [formula]
 
+-- | Set QR code output encoding. Valid for 'QRCode' only
+setQREncoding :: QREncoding -> ChartM ()
+setQREncoding = set
+
+-- | Sets the error correction level for 'QRCode'
+setQRErrorCorrection :: ErrorCorrectionLevel -> ChartM ()
+setQRErrorCorrection ec = set qrLabelData where
+                           qrLabelData = QRLabelData ec defMargin
+                           QRLabelData _ defMargin = defaultQREncodingLabelData
+
+-- | Sets the width (in rows) of the white border around the data portion of the 'QRCode'
+setQRWidth :: Int -> ChartM ()
+setQRWidth m = set qrLabelData where
+                qrLabelData = QRLabelData defEC m
+                QRLabelData defEC _ = defaultQREncodingLabelData
 
 -- | Extracts the data out of the monad and returns a value of type 'Chart'
 getChartData :: ChartM () -> Chart

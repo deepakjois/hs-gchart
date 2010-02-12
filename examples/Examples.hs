@@ -133,6 +133,12 @@ formulaChart = getChartUrl $ do setChartType Formula
                                 addColor "FF0000"
                                 addFill $ Fill (LinearGradient 20 [("76A4FB",1),("FFFFFF",0)]) Background
 
+qrCodeChart = getChartUrl $ do setChartType QRCode
+                               setChartSize 150 150
+                               setLabel "Hello World"
+                               setQREncoding UTF8
+                               setQRErrorCorrection L'
+
 blanks x = take x $ repeat ""
 
 dataSeries1 :: [Int]
@@ -177,3 +183,6 @@ main = do putStrLn christmasPie
           putStrLn bargraphRelativeSpacing
           putStrLn scatterPlotWithMarkers
           putStrLn lineChartWithLineStyles
+          putStrLn formulaChart
+          putStrLn qrCodeChart
+

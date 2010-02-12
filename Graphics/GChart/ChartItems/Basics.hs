@@ -10,7 +10,7 @@ instance ChartItem ChartSize where
 
     encode (Size width height) =  asList ("chs", widthStr ++ show height) where
                                   widthStr | width == 0 = ""
-                                           | otherwise = "x" ++ show width
+                                           | otherwise =  show width ++ "x"
 
 -- Chart Type
 instance ChartItem ChartType where
@@ -33,3 +33,4 @@ instance ChartItem ChartType where
                                     Radar                -> "r"
                                     GoogleOMeter         -> "gom"
                                     Formula              -> "tx"
+                                    QRCode               -> "qr"

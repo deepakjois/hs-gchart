@@ -14,19 +14,13 @@ Some chart types are not supported yet:
 
 - Dynamic Icons <http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html>
 
-- Formula Chart <http://code.google.com/apis/chart/docs/gallery/formulas.html>
-
 - Map Charts <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
-
-- QR Codes <http://code.google.com/apis/chart/docs/gallery/qr_codes.html>
 
 Some parameters are not supported yet:
 
 - Chart Data Scaling <http://code.google.com/apis/chart/docs/data_formats.html#data_scaling>
 
 - Text and Data Value Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_data_point_labels>
-
-- QR code output encoding <http://code.google.com/apis/chart/docs/gallery/qr_codes.html>
 
 - Bar chart zero line <http://code.google.com/apis/chart/docs/gallery/bar_charts.html#chp>
 
@@ -74,6 +68,9 @@ module Graphics.GChart.Types (
   -- ** Pie chart labels, Google-o-meter label (TODO: QR code data, Formula TeX data)
   ChartLabels(..),
 
+  -- ** Chart Label Data
+  ChartLabelData(..), ErrorCorrectionLevel(..),
+
   -- ** Line Styles
   ChartLineStyles(..), LineStyle(..),
 
@@ -84,6 +81,9 @@ module Graphics.GChart.Types (
 
   -- ** Chart Margins
   ChartMargins(..),
+
+  -- ** QR code output encoding
+  QREncoding(..),
 
   -- ** Pie Chart Orientation
   PieChartOrientation(..),
@@ -106,7 +106,7 @@ module Graphics.GChart.Types (
        used as starting points to construct parameters when creating charts. -}
 
   defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker,
-  defaultRangeMarker, defaultFinancialMarker, defaultLineStyle
+  defaultRangeMarker, defaultFinancialMarker, defaultLineStyle, defaultQREncodingLabelData
 ) where
 
 import Control.Monad.State
@@ -132,6 +132,7 @@ data ChartType
   | Radar                 -- ^ Radar Chart
   | GoogleOMeter          -- ^ Google-o-meter
   | Formula               -- ^ Formula Chart
+  | QRCode                -- ^ QR Codes
     deriving Show
 
 -- | Title of the chart
@@ -412,6 +413,25 @@ data LineStyle =  LS { lineStyleThickness :: Float    -- ^ Thickness
 
 type ChartLineStyles = [LineStyle]
 
+-- | QR Code Output Encoding
+data QREncoding = UTF8 | Shift_JIS | ISO8859_1 deriving Show
+
+-- | Error Correction Level for QR Code
+data ErrorCorrectionLevel = L' -- ^ recovery of up to 7% data loss
+                          | M' -- ^ recovery of up to 15% data loss
+                          | Q' -- ^ recovery of up to 25% data loss
+                          | H' -- ^ recovery of up to 30% data loss
+
+instance Show ErrorCorrectionLevel where
+    show L' = "L"
+    show M' = "M"
+    show Q' = "Q"
+    show H' = "H"
+
+-- | Chart Label Data. Applies to 'QRCode'
+data ChartLabelData = QRLabelData ErrorCorrectionLevel Int -- ^ Error Correction Level and Margin (as no. of rows)
+                      deriving Show
+
 -- | Data type for the chart
 data Chart =
     Chart {
@@ -430,6 +450,8 @@ data Chart =
     , barChartWidthSpacing :: Maybe BarChartWidthSpacing
     , pieChartOrientation  :: Maybe PieChartOrientation
     , chartLineStyles      :: Maybe ChartLineStyles
+    , qrEncoding           :: Maybe QREncoding
+    , chartLabelData       :: Maybe ChartLabelData
     } deriving Show
 
 
@@ -474,7 +496,9 @@ defaultChart =
             chartMarkers = Nothing,
             barChartWidthSpacing = Nothing,
             pieChartOrientation = Nothing,
-            chartLineStyles = Nothing
+            chartLineStyles = Nothing,
+            qrEncoding = Nothing,
+            chartLabelData = Nothing
           }
 
 -- | Default value for an axis
@@ -526,4 +550,7 @@ defaultFinancialMarker = FM { financeColor = "0000DD",
 defaultLineStyle = LS { lineStyleThickness = 1,
                         lineStyleLineSegment = 1,
                         lineStyleBlankSegment = 0 }
+
+-- | Default chart label data for QR Encoding
+defaultQREncodingLabelData = QRLabelData L' 4
 
