@@ -2,14 +2,14 @@
 
  **GChart** is a Haskell wrapper around [Google Chart API].
 
-[Google Chart API]: http://code.google.com/apis/chart/
+[Google Chart API]: http://code.google.com/apis/chart/image_charts.html
 
 There is a library on Hackage called [GoogleChart] which provides another
 wrapper, however it has not been updated in a long while. GChart improves upon
 that effort by trying to design a more elegant API, and supporting more chart
 types and features.
 
-[GoogleChart]: http://hackage.haskell.org/packages/archive/GoogleChart/0.2/doc/html/Graphics-Google-Chart.html
+[GoogleChart]: http://hackage.haskell.org/packages/archive/GoogleChart/0.3/doc/html/Graphics-Google-Chart.html
 
 ## Installation
 
