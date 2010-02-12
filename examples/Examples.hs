@@ -2,9 +2,9 @@ import Graphics.GChart
 import Data.Char(ord)
 {-
 
-Some examples to demonstrate usage of GChart.
+Examples to demonstrate usage of GChart.
 
-All examples are taken from this article : http://24ways.org/2007/tracking-christmas-cheer-with-google-charts
+Some examples are taken from this article : http://24ways.org/2007/tracking-christmas-cheer-with-google-charts
 
 -}
 

@@ -42,8 +42,8 @@ module Graphics.GChart.Types (
   -- | Typeclasses for abstraction
   ChartM, ChartItem(set,encode), ChartDataEncodable(addEncodedChartData),
 
-  -- * Chart data
-  -- | This type represents the Chart
+  -- * Chart
+  -- | Data type to represent the chart
   Chart(..),
 
   -- * Chart Parameters
@@ -51,7 +51,6 @@ module Graphics.GChart.Types (
 
       More details : <http://code.google.com/apis/chart/docs/chart_params.html>
   -}
-
 
   -- ** Bar Width and Spacing
   BarChartWidthSpacing(..), BarWidth(..), BarGroupSpacing(..),
@@ -75,18 +74,18 @@ module Graphics.GChart.Types (
   -- ** Pie chart labels, Google-o-meter label (TODO: QR code data, Formula TeX data)
   ChartLabels(..),
 
-  -- *** Line Styles
+  -- ** Line Styles
   ChartLineStyles(..), LineStyle(..),
 
-  -- *** Shape, Range and Financial Markers
+  -- ** Shape, Range and Financial Markers
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
   ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
   RangeMarkerType(..), RangeMarker(..), FinancialMarker(..),
 
-  -- *** Chart Margins
+  -- ** Chart Margins
   ChartMargins(..),
 
-  -- *** Pie Chart Orientation
+  -- ** Pie Chart Orientation
   PieChartOrientation(..),
 
   -- ** Chart Size
@@ -95,10 +94,10 @@ module Graphics.GChart.Types (
   -- ** Chart Type
   ChartType(..),
 
-  -- *** Chart Title and Style
+  -- ** Chart Title and Style
   ChartTitle(..),
 
-  -- *** Visible Axis Axis styles and labels
+  -- ** Visible Axis Axis styles and labels
   ChartAxes, Axis(..), AxisType(..), AxisLabel, AxisPosition, FontSize,
   AxisRange(..), AxisStyle(..), DrawingControl(..), AxisStyleAlignment(..),
 
