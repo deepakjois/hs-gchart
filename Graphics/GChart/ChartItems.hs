@@ -75,7 +75,7 @@ encodeMaybe (Just x)  = encode x
 
 -- FIXME : too much boilerplate. Can it be reduced?
 getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
-                                                 encode $ chartSize chart,
+                                                 encodeMaybe $ chartSize chart,
                                                  encode $ chartData chart,
                                                  encodeMaybe $ chartTitle   chart,
                                                  encodeMaybe $ chartColors  chart,

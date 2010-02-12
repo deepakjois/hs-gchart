@@ -82,6 +82,7 @@ module Graphics.GChart (
    setBarWidthSpacing               ,
    setPieChartOrientation           ,
    addLineStyle                     ,
+   setFormula                       ,
 
   -- * Retrieving Chart Data
 
@@ -306,6 +307,11 @@ setPieChartOrientation = set . PCO
 -- | Add line style
 addLineStyle :: LineStyle -> ChartM()
 addLineStyle = addLineStyleToChart
+
+-- | Set formula. Applies only to 'Formula' charts
+setFormula :: String -> ChartM ()
+setFormula formula = setLabels [formula]
+
 
 -- | Extracts the data out of the monad and returns a value of type 'Chart'
 getChartData :: ChartM () -> Chart

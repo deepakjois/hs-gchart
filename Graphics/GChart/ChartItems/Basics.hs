@@ -6,7 +6,7 @@ import Graphics.GChart.ChartItems.Util
 
 -- Chart Size
 instance ChartItem ChartSize where
-    set size = updateChart $ \chart -> chart { chartSize = size }
+    set size = updateChart $ \chart -> chart { chartSize = Just size }
 
     encode size =  asList ("chs", show width ++ "x" ++ show height) where
                    Size width height = size
@@ -32,3 +32,4 @@ instance ChartItem ChartType where
                                     ScatterPlot          -> "s"
                                     Radar                -> "r"
                                     GoogleOMeter         -> "gom"
+                                    Formula              -> "tx"

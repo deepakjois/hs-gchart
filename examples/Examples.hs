@@ -125,6 +125,12 @@ lineChartWithLineStyles = getChartUrl $ do setChartSize 200 125
 
                                            addChartData $ map encSimpleReverse "IJKNUWUWYdnswz047977315533zy1246872tnkgcaZQONHCECAAAAEII"
                                            addLineStyle $ makeLineStyle { lineStyleThickness = 1, lineStyleLineSegment = 1, lineStyleBlankSegment = 0 }
+
+formulaChart = getChartUrl $ do setChartType Formula
+                                setFormula "\\Large\\mathbb{Q}+\\lim_{x\\to3}\\frac{1}{x}"
+                                addColor "FF0000"
+                                addFill $ Fill (LinearGradient 20 [("76A4FB",1),("FFFFFF",0)]) Background
+
 blanks x = take x $ repeat ""
 
 dataSeries1 :: [Int]

@@ -131,6 +131,7 @@ data ChartType
   | ScatterPlot           -- ^ Scatter Plot
   | Radar                 -- ^ Radar Chart
   | GoogleOMeter          -- ^ Google-o-meter
+  | Formula               -- ^ Formula Chart
     deriving Show
 
 -- | Title of the chart
@@ -414,7 +415,7 @@ type ChartLineStyles = [LineStyle]
 -- | Data type for the chart
 data Chart =
     Chart {
-      chartSize    :: ChartSize
+      chartSize    :: Maybe ChartSize
     , chartType    :: ChartType
     , chartData    :: ChartData
     , chartTitle   :: Maybe ChartTitle
@@ -459,7 +460,7 @@ class Num a => ChartDataEncodable a where
 
 -- | Default value for a chart
 defaultChart =
-    Chart { chartSize  = Size 320 200,
+    Chart { chartSize  = Nothing,
             chartType  = Line,
             chartData  = Simple [],
             chartTitle = Nothing,
