@@ -1,10 +1,8 @@
 FEATURES
 ========
+* Implement remaining chart types and params (see docs for Types.hs for list)
 * Update documentation to match the new docs on API
-  - All URLs
-  - Types.hs organise types according to website
   - Add Chart Gallery charts into examples.hs
-  - Redo docs for GChart.hs page
 * Implement new fixes including data encoding and new charts
 * Include helper functions to scale datasets according to min/max values
 
