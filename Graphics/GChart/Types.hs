@@ -417,7 +417,7 @@ data Chart =
     Chart {
       chartSize    :: Maybe ChartSize
     , chartType    :: ChartType
-    , chartData    :: ChartData
+    , chartData    :: Maybe ChartData
     , chartTitle   :: Maybe ChartTitle
     , chartColors  :: Maybe ChartColors
     , chartFills   :: Maybe ChartFills
@@ -462,7 +462,7 @@ class Num a => ChartDataEncodable a where
 defaultChart =
     Chart { chartSize  = Nothing,
             chartType  = Line,
-            chartData  = Simple [],
+            chartData  = Nothing,
             chartTitle = Nothing,
             chartColors = Nothing,
             chartFills = Nothing,

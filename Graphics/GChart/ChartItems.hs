@@ -29,7 +29,9 @@ getChartDataFromChartM m = execState m defaultChart
 
 addDataToChart d = do c <- get
                       let old = chartData c
-                      set $ addEncodedChartData d old
+                      case old of
+                        Just cd -> set $ addEncodedChartData d cd
+                        _       -> error "Please set data encoding before adding data"
 
 addColorToChart color = do chart <- get
                            let (ChartColors old) = fromMaybe (ChartColors []) $ chartColors chart
@@ -52,10 +54,11 @@ addAxisToChart axis = do chart <- get
 getDataSetIdx = do chart <- get
                    return $ dataSetLength chart
 
-dataSetLength chart = case chartData chart of
-                        Simple   d -> length d - 1
-                        Text     d -> length d - 1
-                        Extended d -> length d - 1
+dataSetLength chart | isNothing $ chartData chart = -1 -- it should never get here..
+                    | otherwise = case fromJust $ chartData chart of
+                                    Simple   d -> length d - 1
+                                    Text     d -> length d - 1
+                                    Extended d -> length d - 1
 
 addMarker :: ChartMarker m => m -> ChartM ()
 addMarker marker = do chart <- get
@@ -76,7 +79,7 @@ encodeMaybe (Just x)  = encode x
 -- FIXME : too much boilerplate. Can it be reduced?
 getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartSize chart,
-                                                 encode $ chartData chart,
+                                                 encodeMaybe $ chartData chart,
                                                  encodeMaybe $ chartTitle   chart,
                                                  encodeMaybe $ chartColors  chart,
                                                  encodeMaybe $ chartFills   chart,

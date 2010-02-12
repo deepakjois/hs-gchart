@@ -26,6 +26,7 @@ christmasPie = getChartUrl $ do setChartSize 600 300
 
 
 barGraph = getChartUrl $ do setChartSize 600 300
+                            setDataEncoding simple
                             setChartType BarHorizontalGrouped
                             addChartData dataSeries1
                             setChartTitle "Food and Drink Consumed Christmas 2007"

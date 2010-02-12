@@ -7,7 +7,7 @@ import Graphics.GChart.DataEncoding
 
 -- Chart Data
 instance ChartItem ChartData where
-    set cData = updateChart $ \chart -> chart { chartData = cData }
+    set cData = updateChart $ \chart -> chart { chartData = Just cData }
 
     encode datas = asList ("chd", encodeData datas)
                         where encodeData (Simple d)   = encodeSimple d
