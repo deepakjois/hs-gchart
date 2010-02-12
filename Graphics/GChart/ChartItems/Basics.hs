@@ -8,9 +8,9 @@ import Graphics.GChart.ChartItems.Util
 instance ChartItem ChartSize where
     set size = updateChart $ \chart -> chart { chartSize = Just size }
 
-    encode size =  asList ("chs", show width ++ "x" ++ show height) where
-                   Size width height = size
-
+    encode (Size width height) =  asList ("chs", widthStr ++ show height) where
+                                  widthStr | width == 0 = ""
+                                           | otherwise = "x" ++ show width
 
 -- Chart Type
 instance ChartItem ChartType where

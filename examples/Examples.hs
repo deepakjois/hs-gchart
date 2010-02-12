@@ -128,6 +128,7 @@ lineChartWithLineStyles = getChartUrl $ do setChartSize 200 125
                                            addLineStyle $ makeLineStyle { lineStyleThickness = 1, lineStyleLineSegment = 1, lineStyleBlankSegment = 0 }
 
 formulaChart = getChartUrl $ do setChartType Formula
+                                setChartHeight 200
                                 setFormula "\\Large\\mathbb{Q}+\\lim_{x\\to3}\\frac{1}{x}"
                                 addColor "FF0000"
                                 addFill $ Fill (LinearGradient 20 [("76A4FB",1),("FFFFFF",0)]) Background

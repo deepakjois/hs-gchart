@@ -62,6 +62,7 @@ module Graphics.GChart (
   -- * Setting Chart Parameters
 
    setChartSize                     ,
+   setChartHeight                   ,
    setChartType                     ,
    setChartTitle                    ,
    setChartTitleWithColor           ,
@@ -192,6 +193,12 @@ makeLineStyle = defaultLineStyle
 -- For e.g : @setChartSize 320 200@
 setChartSize :: Int -> Int -> ChartM ()
 setChartSize w h = set (Size w h)
+
+-- | Set chart height only. Applicable to 'Formula' charts
+-- This will set the width to 0 which will automatically
+-- be excluded when the data is being encoded
+setChartHeight :: Int -> ChartM ()
+setChartHeight h = set (Size 0 h)
 
 -- | Set the chart type by passing a 'ChartType'
 setChartType :: ChartType -> ChartM ()
