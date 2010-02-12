@@ -269,7 +269,7 @@ setGrid = set
 -- 'makeShapeMarker', it automatically adds a data index to refer to the latest
 -- data set
 addShapeMarker :: ShapeMarker -> ChartM ()
-addShapeMarker marker | (shapeDataSetIdx marker) > -1 = addMarker marker
+addShapeMarker marker | shapeDataSetIdx marker > (- 1) = addMarker marker
                       | otherwise = do idx <- getDataSetIdx
                                        let newmarker = marker { shapeDataSetIdx = idx }
                                        addMarker marker
@@ -277,14 +277,14 @@ addShapeMarker marker | (shapeDataSetIdx marker) > -1 = addMarker marker
 -- | Adds a range marker. You can use 'makeRangeMarker' smart constructor when
 -- calling this function
 addRangeMarker :: RangeMarker -> ChartM ()
-addRangeMarker marker = addMarker marker
+addRangeMarker = addMarker
 
 -- | Adds a financial marker. User `makeFinancialMarker` smart constructor when
 -- calling this function. If value of data set index is not specified when using
 -- 'makeFinancialMarker', it automatically adds a data index to refer to the latest
 -- data set
 addFinancialMarker :: FinancialMarker -> ChartM ()
-addFinancialMarker marker | (financeDataSetIdx marker) > -1 = addMarker marker
+addFinancialMarker marker | financeDataSetIdx marker > (- 1) = addMarker marker
                           | otherwise = do idx <- getDataSetIdx
                                            let newmarker = marker { financeDataSetIdx = idx }
                                            addMarker marker

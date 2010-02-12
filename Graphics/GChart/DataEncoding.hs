@@ -18,7 +18,7 @@ encodeSimple datas = "s:" ++ intercalate "," (map (map enc) datas) where
           | otherwise          = '_'
 
 encSimpleReverse :: Char -> Int
-encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = (ord c - ord 'A')
+encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = ord c - ord 'A'
                    | ord c >= ord 'a' && ord c <= ord 'z' = 26 + (ord c - ord 'a')
                    | ord c >= ord '0' && ord c <= ord '9' = 52 + (ord c - ord '0')
                    | otherwise = -1

@@ -59,7 +59,7 @@ instance ChartItem ChartMarkers where
 
 -- Shape Markers
 instance ChartMarker ShapeMarker where
-    encodeChartMarker marker = optionalat ++  (intercalate "," $  [marker_type, color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
+    encodeChartMarker marker = optionalat ++  (intercalate "," $ [marker_type, color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
                                  marker_type = case shapeType marker of
                                                  ShapeArrow       -> "a"
                                                  ShapeCross       -> "c"
@@ -76,7 +76,7 @@ instance ChartMarker ShapeMarker where
                                  datapoint = case shapeDataPoint marker of
                                                DataPoint x                  ->  show x
                                                DataPointEvery               ->  "-1"
-                                               DataPointEveryN x            ->  "-" ++ show x
+                                               DataPointEveryN x            ->  '-' : show x
                                                DataPointEveryNRange (x,y) n ->  intercalate ":"$  map show [x,y,n]
                                                DataPointXY (x,y)            ->  show x ++ ":" ++ show y
 
@@ -100,13 +100,13 @@ instance ChartMarker RangeMarker where
 
 -- Financial Markers
 instance ChartMarker FinancialMarker where
-    encodeChartMarker marker = (intercalate "," $  ["F", color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
+    encodeChartMarker marker = intercalate "," $  ["F", color, idx, datapoint, size] ++ [show priority | priority /= 0] where
                                  color = financeColor marker
 
                                  datapoint = case financeDataPoint marker of
                                                DataPoint x                  ->  show x
                                                DataPointEvery               ->  "-1"
-                                               DataPointEveryN x            ->  "-" ++ show x
+                                               DataPointEveryN x            ->  '-' : show x
                                                DataPointEveryNRange (x,y) n ->  error "Invalid value for finanical marker"
                                                DataPointXY (x,y)            ->   show x ++ ":" ++ show y
 
