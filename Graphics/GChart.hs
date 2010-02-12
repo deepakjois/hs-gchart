@@ -37,7 +37,58 @@ The module constists of:
 - Functions to retrieve chart data in form of URL or Haskell data type
 
 -}
-module Graphics.GChart  where
+module Graphics.GChart (
+  module Graphics.GChart.Types,
+
+  -- * Smart Constructors
+   solid                ,
+   legend               ,
+   legendWithPosition   ,
+   makeAxis             ,
+   makeGrid             ,
+   simple               ,
+   text                 ,
+   extended             ,
+   automatic            ,
+   automaticWithSpacing ,
+   barwidth             ,
+   barwidthspacing      ,
+   relative             ,
+   makeShapeMarker      ,
+   makeRangeMarker      ,
+   makeFinancialMarker  ,
+   makeLineStyle        ,
+
+  -- * Setting Chart Parameters
+
+   setChartSize                     ,
+   setChartType                     ,
+   setChartTitle                    ,
+   setChartTitleWithColor           ,
+   setChartTitleWithColorAndFontSize,
+   setDataEncoding                  ,
+   addChartData                     ,
+   addChartDataXY                   ,
+   setColors                        ,
+   addColor                         ,
+   addFill                          ,
+   setLegend                        ,
+   addAxis                          ,
+   setGrid                          ,
+   addShapeMarker                   ,
+   addRangeMarker                   ,
+   addFinancialMarker               ,
+   setLabels                        ,
+   setBarWidthSpacing               ,
+   setPieChartOrientation           ,
+   addLineStyle                     ,
+
+  -- * Retrieving Chart Data
+
+  getChartData,
+  getChartUrl,
+  convertToUrl
+)  where
 
 import Graphics.GChart.Types
 import Graphics.GChart.ChartItems
@@ -45,10 +96,11 @@ import Graphics.GChart.DataEncoding
 
 import Data.List
 
--- * Smart Constructors
+
 
 -- | generates a 'Solid' fill from a hex color value
-solid = Fill . Solid
+solid :: Color -> FillType -> Fill
+solid color filltype = Fill (Solid color) filltype
 
 -- | generates a 'ChartLegend' from a list of labels
 legend :: [String] -> ChartLegend
@@ -134,8 +186,6 @@ makeFinancialMarker = defaultFinancialMarker
 -- | Line Style
 makeLineStyle :: LineStyle
 makeLineStyle = defaultLineStyle
-
--- * Setting Chart Parameters
 
 -- | Set the chart size by passing the width and the height in pixels
 -- For e.g : @setChartSize 320 200@
@@ -256,8 +306,6 @@ setPieChartOrientation = set . PCO
 -- | Add line style
 addLineStyle :: LineStyle -> ChartM()
 addLineStyle = addLineStyleToChart
-
--- * Retrieving Chart Data
 
 -- | Extracts the data out of the monad and returns a value of type 'Chart'
 getChartData :: ChartM () -> Chart
