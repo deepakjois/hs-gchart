@@ -91,7 +91,7 @@ bargraphAutoSpacing = getChartUrl $ do setChartSize 190 125
                                        addChartData ([10,15,20,25,30]::[Int])
                                        addChartData ([13,5,6,34,12]::[Int])
                                        setColors ["4d89f9","000000"]
-                                       setBarWidthSpacing $ automatic
+                                       setBarWidthSpacing automatic
 
 
 bargraphRelativeSpacing = getChartUrl $ do setChartSize 190 125
@@ -139,7 +139,7 @@ qrCodeChart = getChartUrl $ do setChartType QRCode
                                setQREncoding UTF8
                                setQRErrorCorrection L'
 
-blanks x = take x $ repeat ""
+blanks x = replicate x ""
 
 dataSeries1 :: [Int]
 dataSeries1 = [10,20,8,25,5,3,15,9,5]
@@ -169,7 +169,7 @@ labelSeries1 = ["Egg nog",
                 "Snacks"]
 
 encSimpleReverse :: Char -> Int
-encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = (ord c - ord 'A')
+encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = ord c - ord 'A'
                    | ord c >= ord 'a' && ord c <= ord 'z' = 26 + (ord c - ord 'a')
                    | ord c >= ord '0' && ord c <= ord '9' = 52 + (ord c - ord '0')
                    | otherwise = -1
