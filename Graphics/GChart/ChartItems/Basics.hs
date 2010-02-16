@@ -31,6 +31,7 @@ instance ChartItem ChartType where
                                     Venn                 -> "v"
                                     ScatterPlot          -> "s"
                                     Radar                -> "r"
+                                    RadarCurvedLines     -> "rs"
                                     GoogleOMeter         -> "gom"
                                     Formula              -> "tx"
                                     QRCode               -> "qr"

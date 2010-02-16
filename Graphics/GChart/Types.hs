@@ -130,6 +130,7 @@ data ChartType
   | Venn                  -- ^ Venn Diagram
   | ScatterPlot           -- ^ Scatter Plot
   | Radar                 -- ^ Radar Chart
+  | RadarCurvedLines      -- ^ Radar Chart, connects points with curved lines
   | GoogleOMeter          -- ^ Google-o-meter
   | Formula               -- ^ Formula Chart
   | QRCode                -- ^ QR Codes
