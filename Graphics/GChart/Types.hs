@@ -28,7 +28,7 @@ Some parameters are not supported yet:
 
 - Geographic area <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
 
-- Some types of Shape Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
+- Shape offset feature for shape markers  <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
 
 -}
 
@@ -283,15 +283,18 @@ data ChartGrid =
     } deriving Show
 
 -- | Shape type of 'ShapeMarker'
-data ShapeType = ShapeArrow       -- ^ Arrow
-               | ShapeCross       -- ^ Cross
-               | ShapeDiamond     -- ^ Diamond
-               | ShapeCircle      -- ^ Circle
-               | ShapeSquare      -- ^ Square
-               | VerticalLine     -- ^ Vertical line from x-axis to data point
-               | VerticalLineFull -- ^ Vertical line across the chart
-               | HorizontalLine   -- ^ Horizontal line across the chart
-               | ShapeX           -- ^ X shape
+data ShapeType = ShapeArrow            -- ^ Arrow
+               | ShapeCross            -- ^ Cross
+               | ShapeRectangle        -- ^ Rectangle
+               | ShapeDiamond          -- ^ Diamond
+               | ShapeErrorBarMarker   -- ^ Error Bar Marker
+               | HorizontalLine        -- ^ Horizontal line across the chart at specified height
+               | HorizontalLineFull    -- ^ Horizontal line through the specified data marker
+               | ShapeCircle           -- ^ Circle
+               | ShapeSquare           -- ^ Square
+               | VerticalLine          -- ^ Vertical line from x-axis to data point
+               | VerticalLineFull      -- ^ Vertical line across the chart
+               | ShapeX                -- ^ X shape
                  deriving Show
 
 
@@ -319,12 +322,19 @@ data MarkerDataPoint =
 
 -- | Shape Marker
 data ShapeMarker =
-    SM { shapeType  :: ShapeType           -- ^ Shape type
-       , shapeColor :: Color               -- ^ Shape Marker color
-       , shapeDataSetIdx :: Int            -- ^ Data Set Index
-       , shapeDataPoint  :: MarkerDataPoint -- ^ Data point value
-       , shapeSize :: Int                  -- ^ Size in pixels
-       , shapePriority :: Int              -- ^ Priority of drawing. Can be one of -1,0,1
+    SM { shapeType  :: ShapeType             -- ^ Shape type
+       , shapeColor :: Color                 -- ^ Shape Marker color
+       , shapeDataSetIdx :: Int              -- ^ Data Set Index
+       , shapeDataPoints  :: MarkerDataPoint -- ^ Data point value
+       , shapeSize :: Int                    -- ^ Size in pixels
+       , shapeWidth :: Maybe Int             -- ^ Optional width used for certain shapes
+       , shapeZorder :: Float                -- ^ The layer on which to draw the
+                                             -- marker. This is a floating point
+                                             -- number from -1.0 to 1.0,
+                                             -- inclusive, where -1.0 is the
+                                             -- bottom and 1.0 is the top
+
+       -- TODO Add shape offset feature
        } deriving Show
 
 -- | 'RangeMarker' type
@@ -533,9 +543,10 @@ defaultSpacing = Fixed (4,8)
 defaultShapeMarker =  SM { shapeType = ShapeCircle,
                            shapeColor = "0000DD",
                            shapeDataSetIdx = -1,
-                           shapeDataPoint = DataPointEvery,
+                           shapeDataPoints = DataPointEvery,
                            shapeSize = 5,
-                           shapePriority = 0 }
+                           shapeWidth = Nothing,
+                           shapeZorder = 0 }
 
 -- | Default value of range marker
 defaultRangeMarker = RM { rangeMarkerType  = RangeMarkerHorizontal,

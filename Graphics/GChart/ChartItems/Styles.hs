@@ -59,21 +59,24 @@ instance ChartItem ChartMarkers where
 
 -- Shape Markers
 instance ChartMarker ShapeMarker where
-    encodeChartMarker marker = optionalat ++  (intercalate "," $ [marker_type, color, idx, datapoint, size] ++ [show priority | priority /= 0]) where
+    encodeChartMarker marker = optionalat ++  (intercalate "," $ [marker_type, color, idx, datapoint, size ++ width] ++ [show zorder | zorder /= 0]) where
                                  marker_type = case shapeType marker of
-                                                 ShapeArrow       -> "a"
-                                                 ShapeCross       -> "c"
-                                                 ShapeDiamond     -> "d"
-                                                 ShapeCircle      -> "o"
-                                                 ShapeSquare      -> "s"
-                                                 VerticalLine     -> "v"
-                                                 VerticalLineFull -> "V"
-                                                 HorizontalLine   -> "h"
-                                                 ShapeX           -> "x"
+                                                 ShapeArrow          -> "a"
+                                                 ShapeCross          -> "c"
+                                                 ShapeRectangle      -> "C"
+                                                 ShapeDiamond        -> "d"
+                                                 ShapeErrorBarMarker -> "E"
+                                                 HorizontalLine      -> "h"
+                                                 HorizontalLineFull  -> "H"
+                                                 ShapeCircle         -> "o"
+                                                 ShapeSquare         -> "s"
+                                                 VerticalLine        -> "v"
+                                                 VerticalLineFull    -> "V"
+                                                 ShapeX              -> "x"
 
                                  color = shapeColor marker
 
-                                 datapoint = case shapeDataPoint marker of
+                                 datapoint = case shapeDataPoints marker of
                                                DataPoint x                  ->  show x
                                                DataPointEvery               ->  "-1"
                                                DataPointEveryN x            ->  '-' : show x
@@ -82,9 +85,12 @@ instance ChartMarker ShapeMarker where
 
                                  idx  = show $ shapeDataSetIdx marker
                                  size = show $ shapeSize marker
-                                 priority = shapePriority marker
+                                 width = case shapeWidth marker of
+                                           Nothing -> ""
+                                           Just x  -> ":" ++ show x
+                                 zorder = shapeZorder marker
 
-                                 optionalat = [ '@' | isDataPointXY $ shapeDataPoint marker ]
+                                 optionalat = [ '@' | isDataPointXY $ shapeDataPoints marker ]
                                  isDataPointXY (DataPointXY _) = True
                                  isDataPointXY _               = False
 -- Range Markers
