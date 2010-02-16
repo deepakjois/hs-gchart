@@ -19,7 +19,7 @@ types and features.
 
 * [API functions reference](http://hackage.haskell.org/package/hs-gchart)
 
-* [Haskell data types reference](http://hackage.haskell.org/packages/archive/hs-gchart/0.3/doc/html/Graphics-GChart-Types.html)
+* [Haskell data types reference](http://hackage.haskell.org/packages/archive/hs-gchart/0.4/doc/html/Graphics-GChart-Types.html)
 
 * [Google Chart API]
 
