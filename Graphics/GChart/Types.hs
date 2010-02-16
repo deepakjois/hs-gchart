@@ -28,6 +28,8 @@ Some parameters are not supported yet:
 
 - Geographic area <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
 
+- Some types of Shape Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
+
 -}
 
 module Graphics.GChart.Types (
