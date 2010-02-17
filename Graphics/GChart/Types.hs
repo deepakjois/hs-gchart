@@ -18,15 +18,21 @@ Some chart types are not supported yet:
 
 Some parameters are not supported yet:
 
+- Line Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_line_markers>
+
+- Line Fill <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_line_fills>
+
 - Text and Data Value Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_data_point_labels>
 
-- Bar chart zero line <http://code.google.com/apis/chart/docs/gallery/bar_charts.html#chp>
+- Shape offset feature for shape markers  <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
+
+- Modfy FillType to conform to new API <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_gradient_fills>
 
 - Dynamic icon type <http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html>
 
 - Geographic area <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
 
-- Shape offset feature for shape markers  <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
+- Bar chart zero line <http://code.google.com/apis/chart/docs/gallery/bar_charts.html#chp>
 
 -}
 
