@@ -2,6 +2,7 @@
 module Graphics.GChart.ChartItems (
   getChartDataFromChartM,
   addDataToChart,
+  addScaleToChart,
   addColorToChart,
   addFillToChart,
   addAxisToChart,
@@ -32,6 +33,13 @@ addDataToChart d = do c <- get
                       case old of
                         Just cd -> set $ addEncodedChartData d cd
                         _       -> error "Please set data encoding before adding data"
+
+addScaleToChart scale = do c <- get
+                           let old = chartDataScales c
+                           case old of
+                             Just (CDS cds) -> set $ CDS $ cds ++ [scale]
+                             Nothing -> set $ CDS [scale]
+
 
 addColorToChart color = do chart <- get
                            let (ChartColors old) = fromMaybe (ChartColors []) $ chartColors chart
@@ -80,6 +88,7 @@ encodeMaybe (Just x)  = encode x
 getParams chart =  filter (/= ("","")) $ concat [encode $ chartType chart,
                                                  encodeMaybe $ chartSize chart,
                                                  encodeMaybe $ chartData chart,
+                                                 encodeMaybe $ chartDataScales chart,
                                                  encodeMaybe $ chartTitle   chart,
                                                  encodeMaybe $ chartColors  chart,
                                                  encodeMaybe $ chartFills   chart,

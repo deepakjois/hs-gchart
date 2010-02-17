@@ -5,6 +5,8 @@ import Graphics.GChart.ChartItems.Util
 
 import Graphics.GChart.DataEncoding
 
+import Data.List(intercalate)
+
 -- Chart Data
 instance ChartItem ChartData where
     set cData = updateChart $ \chart -> chart { chartData = Just cData }
@@ -14,6 +16,11 @@ instance ChartItem ChartData where
                               encodeData (Text d)     = encodeText d
                               encodeData (Extended d) = encodeExtended d
 
+instance ChartItem ChartDataScales where
+    set scales = updateChart $ \chart -> chart { chartDataScales = Just scales }
+
+    encode (CDS scales) = asList ("chds", intercalate "," $ map (\(min,max) -> showFloat min ++ "," ++ showFloat max) scales)
+
 instance ChartDataEncodable Int where
     addEncodedChartData d cd@(Simple old) = Simple $ old ++ [d]
     addEncodedChartData d cd@(Extended old) = Extended $ old ++ [d]
@@ -22,7 +29,6 @@ instance ChartDataEncodable Int where
 instance ChartDataEncodable Float where
     addEncodedChartData d cd@(Text old) = Text $ old ++ [d]
     addEncodedChartData d _             = error "Invalid type for specified encoding. Use int data"
-
 
 instance ChartItem QREncoding where
     set qrEnc = updateChart $ \chart -> chart { qrEncoding = Just qrEnc }

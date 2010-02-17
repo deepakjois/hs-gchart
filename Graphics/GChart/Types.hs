@@ -18,8 +18,6 @@ Some chart types are not supported yet:
 
 Some parameters are not supported yet:
 
-- Chart Data Scaling <http://code.google.com/apis/chart/docs/data_formats.html#data_scaling>
-
 - Text and Data Value Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_data_point_labels>
 
 - Bar chart zero line <http://code.google.com/apis/chart/docs/gallery/bar_charts.html#chp>
@@ -55,7 +53,7 @@ module Graphics.GChart.Types (
   ChartColors(..), Color,
 
   -- ** Chart Data
-  ChartData(..),
+  ChartData(..), ChartDataScales(..), DataScale(..),
 
   -- ** Chart Legend Text and Style
   ChartLegend(..), LegendPosition(..),
@@ -146,8 +144,14 @@ data ChartTitle =
     , titleFontSize :: Maybe FontSize -- ^ Title Font Size
     } deriving Show
 
+-- | Data scaling expressed as (@series_min@,@series_max@). Applies to text encoding only
+type DataScale = (Float,Float)
+
+-- | List of Data scaling values
+data ChartDataScales = CDS [DataScale] deriving Show
+
 -- | Chart data along with encoding. XY data for is encoded a pair of
--- | consecutive data sets
+-- consecutive data sets
 data ChartData
   = Simple [[Int]]   -- ^ lets you specify integer values from 0-61, inclusive
   | Text [[Float]]   -- ^ supports floating point numbers from 0-100, inclusive
@@ -451,6 +455,7 @@ data Chart =
       chartSize    :: Maybe ChartSize
     , chartType    :: ChartType
     , chartData    :: Maybe ChartData
+    , chartDataScales :: Maybe ChartDataScales
     , chartTitle   :: Maybe ChartTitle
     , chartColors  :: Maybe ChartColors
     , chartFills   :: Maybe ChartFills
@@ -498,6 +503,7 @@ defaultChart =
     Chart { chartSize  = Nothing,
             chartType  = Line,
             chartData  = Nothing,
+            chartDataScales = Nothing,
             chartTitle = Nothing,
             chartColors = Nothing,
             chartFills = Nothing,

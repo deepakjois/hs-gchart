@@ -139,6 +139,14 @@ qrCodeChart = getChartUrl $ do setChartType QRCode
                                setQREncoding UTF8
                                setQRErrorCorrection L'
 
+barGraphWithShiftedZeroLine = getChartUrl $ do setChartType BarVerticalGrouped
+                                               setChartSize 320 200
+                                               setDataEncoding text
+                                               addChartData ([30,-60,50,140,80,-90]::[Float])
+                                               addDataScale (-80,140)
+                                               addAxis $ makeAxis { axisType = AxisLeft,
+                                                                    axisRange =  Just $ Range (-80,140) Nothing}
+
 blanks x = replicate x ""
 
 dataSeries1 :: [Int]

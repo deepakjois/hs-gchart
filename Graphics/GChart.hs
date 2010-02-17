@@ -69,6 +69,7 @@ module Graphics.GChart (
    setChartTitleWithColorAndFontSize,
    setDataEncoding                  ,
    addChartData                     ,
+   addDataScale                     ,
    addChartDataXY                   ,
    setColors                        ,
    addColor                         ,
@@ -238,6 +239,12 @@ setDataEncoding = set
 -}
 addChartData :: ChartDataEncodable a => [a] -> ChartM ()
 addChartData = addDataToChart
+
+
+-- | Add a scale to chart.If more than one scale is added, it applies
+-- the scale in order to each data series
+addDataScale :: DataScale -> ChartM ()
+addDataScale = addScaleToChart
 
 -- | Works like 'addChartData', but for XY datasets for line XY chart etc
 addChartDataXY :: ChartDataEncodable a => [(a,a)] -> ChartM ()
