@@ -23,14 +23,15 @@ encSimpleReverse c | ord c >= ord 'A' && ord c <= ord 'Z' = ord c - ord 'A'
                    | ord c >= ord '0' && ord c <= ord '9' = 52 + (ord c - ord '0')
                    | otherwise = -1
 
+-- FIXME This assumes all data is in range.
 encodeText datas = "t:" ++ intercalate "|" (map encData datas) where
-    encData = intercalate "," . map encDatum
-    encDatum i | i >= 0 && i <= 100 = showDecimal i
-               | otherwise          = "-1"
-    showDecimal :: Float -> String
-    showDecimal i | makeFloat (truncate i) - i == 0  = show $ truncate i
-                  | otherwise                            = show (fromIntegral (round (i * 10.0)) / 10.0)
-    makeFloat i = fromIntegral i :: Float
+    encData = intercalate "," . map showDecimal
+
+showDecimal :: Float -> String
+showDecimal i | makeFloat (truncate i) - i == 0  = show $ truncate i
+              | otherwise                            = show (fromIntegral (round (i * 10.0)) / 10.0)
+
+makeFloat i = fromIntegral i :: Float
 
 encodeExtended datas = "e:" ++ intercalate "," (map (concatMap encDatum) datas) where
     encDatum i | i >= 0 && i < 4096 = let (a, b) = i `quotRem` 64 in
