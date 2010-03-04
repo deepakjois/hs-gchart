@@ -10,7 +10,6 @@ FEATURES
 
 CODE IMPROVEMENTS
 =================
-* A better function to show float values when they are integers
 * Basic Error Handling when attempting to use items not allowed in a chart type
 * Find ways to remove boilerplate
   - from ChartItem class instances
