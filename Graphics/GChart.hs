@@ -57,10 +57,10 @@ module Graphics.GChart (
    makeShapeMarker      ,
    makeRangeMarker      ,
    makeFinancialMarker  ,
+   makeLineMarker       ,
    makeLineStyle        ,
 
   -- * Setting Chart Parameters
-
    setChartSize                     ,
    setChartHeight                   ,
    setChartType                     ,
@@ -80,6 +80,7 @@ module Graphics.GChart (
    addShapeMarker                   ,
    addRangeMarker                   ,
    addFinancialMarker               ,
+   addLineMarker                    ,
    setLabels                        ,
    setLabel                         ,
    setBarWidthSpacing               ,
@@ -184,6 +185,10 @@ makeShapeMarker = defaultShapeMarker
 -- | Range Marker
 makeRangeMarker :: RangeMarker
 makeRangeMarker = defaultRangeMarker
+
+-- | Line Marker
+makeLineMarker :: LineMarker
+makeLineMarker = defaultLineMarker
 
 -- | Financial Marker
 makeFinancialMarker :: FinancialMarker
@@ -297,7 +302,7 @@ addShapeMarker marker | shapeDataSetIdx marker > (- 1) = addMarker marker
 addRangeMarker :: RangeMarker -> ChartM ()
 addRangeMarker = addMarker
 
--- | Adds a financial marker. User `makeFinancialMarker` smart constructor when
+-- | Adds a financial marker. Use 'makeFinancialMarker' smart constructor when
 -- calling this function. If value of data set index is not specified when using
 -- 'makeFinancialMarker', it automatically adds a data index to refer to the latest
 -- data set
@@ -305,8 +310,16 @@ addFinancialMarker :: FinancialMarker -> ChartM ()
 addFinancialMarker marker | financeDataSetIdx marker > (- 1) = addMarker marker
                           | otherwise = do idx <- getDataSetIdx
                                            let newmarker = marker { financeDataSetIdx = idx }
-                                           addMarker marker
-
+                                           addMarker newmarker
+-- | Adds a line marker. Use 'makeLineMarker' smart constructor when calling
+-- this function. If value of data set index is not specified when using
+-- 'makeLineMarker', it automatically adds a data index to refer to the
+-- latest data set
+addLineMarker :: LineMarker -> ChartM ()
+addLineMarker marker | lineDataSetIdx marker > (- 1) = addMarker marker
+                     | otherwise = do idx <- getDataSetIdx
+                                      let newmarker = marker { lineDataSetIdx = idx }
+                                      addMarker newmarker
 
 -- | Set labels for the chart
 setLabels :: [String] -> ChartM ()

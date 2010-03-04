@@ -18,13 +18,13 @@ Some chart types are not supported yet:
 
 Some parameters are not supported yet:
 
-- Line Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_line_markers>
-
 - Line Fill <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_line_fills>
 
 - Text and Data Value Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_data_point_labels>
 
 - Shape offset feature for shape markers  <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
+
+- Bug in 'BarChartWidthSpacing'. Not fully accurate
 
 - Modfy FillType to conform to new API <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_gradient_fills>
 
@@ -80,10 +80,12 @@ module Graphics.GChart.Types (
   -- ** Line Styles
   ChartLineStyles(..), LineStyle(..),
 
-  -- ** Shape, Range and Financial Markers
+  -- ** Line, Shape, Range and Financial Markers
   AnyChartMarker(..), ChartMarker(..), ChartMarkers,
+  LineWhichPoints(..),LineMarker(..),
   ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
-  RangeMarkerType(..), RangeMarker(..), FinancialMarker(..),
+  RangeMarkerType(..), RangeMarker(..),
+  FinancialMarker(..),
 
   -- ** Chart Margins
   ChartMargins(..),
@@ -112,7 +114,8 @@ module Graphics.GChart.Types (
        used as starting points to construct parameters when creating charts. -}
 
   defaultChart, defaultAxis, defaultGrid, defaultSpacing, defaultShapeMarker,
-  defaultRangeMarker, defaultFinancialMarker, defaultLineStyle, defaultQREncodingLabelData
+  defaultRangeMarker, defaultFinancialMarker, defaultLineStyle, defaultLineMarker,
+  defaultQREncodingLabelData
 ) where
 
 import Control.Monad.State
@@ -379,6 +382,21 @@ data FinancialMarker =
        , financePriority :: Int               -- ^ Priority of drawing. Can be one of -1,0,1
        } deriving Show
 
+-- | Which points in a series to use to draw the line.
+data LineWhichPoints = PointsAll            -- ^ Use all the points in the series.
+                     | Points (Maybe Float, Maybe Float) -- ^ (start,end) indicating a specific range of points
+                       deriving Show
+
+-- | Line Marker
+data LineMarker =
+    LM { lineColor :: Color                    -- ^ Line Marker Color
+       , lineDataSetIdx :: Int                 -- ^ Data set index
+       , lineWhichPoints :: LineWhichPoints    -- ^ Which points to draw the line markers on
+       , lineSize :: Int                       -- ^ Width of line in pixels
+       , lineZorder :: Float                   -- ^ Floating point between -1 and 1 indicating
+                                               -- the layer on which to draw.
+       } deriving Show
+
 -- | Typeclass to abstract over different chart markers
 class Show a => ChartMarker a where
     encodeChartMarker :: a -> String
@@ -571,6 +589,13 @@ defaultFinancialMarker = FM { financeColor = "0000DD",
                               financeDataPoint = DataPointEvery,
                               financeSize = 5,
                               financePriority = 0 }
+
+-- | Default value of a line marker. Make sure you change the value of @lineDataSetIdx@
+defaultLineMarker = LM { lineColor = "0000DD"
+                       , lineDataSetIdx = -1
+                       , lineWhichPoints = PointsAll
+                       , lineSize = 5
+                       , lineZorder = 0.0 }
 
 -- | Default value of a line style
 defaultLineStyle = LS { lineStyleThickness = 1,

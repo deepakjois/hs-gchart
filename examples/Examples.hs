@@ -147,6 +147,16 @@ barGraphWithShiftedZeroLine = getChartUrl $ do setChartType BarVerticalGrouped
                                                addAxis $ makeAxis { axisType = AxisLeft,
                                                                     axisRange =  Just $ Range (-80,140) Nothing}
 
+lineMarkerSample = getChartUrl $ do setChartType BarVerticalGrouped
+                                    setChartSize 200 150
+                                    setDataEncoding simple
+                                    setBarWidthSpacing $ barwidth 20
+                                    addChartData $ map encSimpleReverse "1XQbnf4"
+                                    addColor "76A4FB"
+                                    addLineMarker $ makeLineMarker { lineColor = "0033FF",
+                                                                     lineWhichPoints = PointsAll,
+                                                                     lineZorder = 1 }
+
 blanks x = replicate x ""
 
 dataSeries1 :: [Int]

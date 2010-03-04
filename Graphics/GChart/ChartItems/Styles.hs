@@ -57,6 +57,20 @@ instance ChartItem ChartMarkers where
     set markers    = updateChart $ \chart -> chart { chartMarkers = Just markers }
     encode markers = asList ("chm",intercalate "|" $ map encodeChartMarker markers)
 
+-- Line Markers
+instance ChartMarker LineMarker where
+    encodeChartMarker marker = intercalate "," ["D",color,series_index, which_points, width, z_order] where
+                                 color = lineColor marker
+                                 series_index = show $ lineDataSetIdx marker
+                                 which_points = case lineWhichPoints marker of
+                                                  PointsAll                -> "0"
+                                                  Points (Just s,Just e)   -> show s ++ ":" ++ show e
+                                                  Points (Just s, Nothing) -> show s
+                                                  Points (Nothing, Just e) -> show e
+                                                  _                        -> error "Invalid points specification"
+                                 width = show $ lineSize marker
+                                 z_order = showFloat $ lineZorder marker
+
 -- Shape Markers
 instance ChartMarker ShapeMarker where
     encodeChartMarker marker = optionalat ++  (intercalate "," $ [marker_type, color, idx, datapoint, size ++ width] ++ [show zorder | zorder /= 0]) where
