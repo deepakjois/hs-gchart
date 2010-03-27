@@ -157,6 +157,20 @@ lineMarkerSample = getChartUrl $ do setChartType BarVerticalGrouped
                                                                      lineWhichPoints = PointsAll,
                                                                      lineZorder = 1 }
 
+lineFillSample = getChartUrl $ do setChartType Line
+                                  setChartSize 200 125
+                                  setDataEncoding simple
+                                  addChartData $ map encSimpleReverse "cefhjkqwrlgYcfgc"
+                                  addLineFill (LineFillBetween 0 1) "224499"
+                                  addChartData $ map encSimpleReverse "QSSVXXdkfZUMRTUQ"
+                                  addLineFill (LineFillBetween 1 2) "FF0000"
+                                  addChartData $ map encSimpleReverse "HJJMOOUbVPKDHKLH"
+                                  addLineFill (LineFillBetween 2 3) "80C65A"
+                                  addAxis $  makeAxis { axisType = AxisBottom,
+                                                       axisLabels = Just  ["Sep","Oct","Nov","Dec"] }
+                                  addAxis $ makeAxis { axisType = AxisLeft,
+                                                       axisLabels = Just  ["","50","100"] }
+
 blanks x = replicate x ""
 
 dataSeries1 :: [Int]

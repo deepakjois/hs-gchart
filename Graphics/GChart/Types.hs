@@ -18,8 +18,6 @@ Some chart types are not supported yet:
 
 Some parameters are not supported yet:
 
-- Line Fill <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_line_fills>
-
 - Text and Data Value Markers <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_data_point_labels>
 
 - Shape offset feature for shape markers  <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_shape_markers>
@@ -31,6 +29,8 @@ Some parameters are not supported yet:
 - Dynamic icon type <http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html>
 
 - Geographic area <http://code.google.com/apis/chart/docs/gallery/map_charts.html>
+
+- Vertical slice filling <http://code.google.com/apis/chart/docs/chart_params.html#gcharts_line_fills>
 
 - Bar chart zero line <http://code.google.com/apis/chart/docs/gallery/bar_charts.html#chp>
 
@@ -86,6 +86,9 @@ module Graphics.GChart.Types (
   ShapeType(..), MarkerDataPoint(..), ShapeMarker(..),
   RangeMarkerType(..), RangeMarker(..),
   FinancialMarker(..),
+
+  -- ** Line Fills
+  LineFillType(..), LineFillMarker(..),
 
   -- ** Chart Margins
   ChartMargins(..),
@@ -204,8 +207,9 @@ data FillType
 -- | Constructor for a chart fill
 data Fill = Fill FillKind FillType deriving Show
 
--- | Chart fills, as a list of `Fill's
+-- | Chart fills, as a list of 'Fill's
 type ChartFills = [Fill]
+
 
 -- | Position of legend on chart. Applies to 'ChartLegend'
 data LegendPosition
@@ -396,6 +400,15 @@ data LineMarker =
        , lineZorder :: Float                   -- ^ Floating point between -1 and 1 indicating
                                                -- the layer on which to draw.
        } deriving Show
+
+-- | Line fill type for 'LineFill'
+data LineFillType = LineFillFrom Int   -- ^ Line fill starting from a start index
+                  | LineFillBetween Int Int -- ^ Line fill between a start index and end index
+                    deriving Show
+
+-- | Line Fill Marker
+data LineFillMarker = LineFillMarker LineFillType Color deriving Show
+
 
 -- | Typeclass to abstract over different chart markers
 class Show a => ChartMarker a where

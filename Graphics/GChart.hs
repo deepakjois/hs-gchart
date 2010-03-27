@@ -81,6 +81,7 @@ module Graphics.GChart (
    addRangeMarker                   ,
    addFinancialMarker               ,
    addLineMarker                    ,
+   addLineFill                      ,
    setLabels                        ,
    setLabel                         ,
    setBarWidthSpacing               ,
@@ -320,6 +321,10 @@ addLineMarker marker | lineDataSetIdx marker > (- 1) = addMarker marker
                      | otherwise = do idx <- getDataSetIdx
                                       let newmarker = marker { lineDataSetIdx = idx }
                                       addMarker newmarker
+
+-- | Adds a line fill to the chart
+addLineFill :: LineFillType -> Color -> ChartM ()
+addLineFill fillType color = addMarker (LineFillMarker fillType color)
 
 -- | Set labels for the chart
 setLabels :: [String] -> ChartM ()

@@ -73,7 +73,7 @@ instance ChartMarker LineMarker where
 
 -- Shape Markers
 instance ChartMarker ShapeMarker where
-    encodeChartMarker marker = optionalat ++  (intercalate "," $ [marker_type, color, idx, datapoint, size ++ width] ++ [show zorder | zorder /= 0]) where
+    encodeChartMarker marker = optionalat ++ intercalate ","  ([marker_type, color, idx, datapoint, size ++ width] ++ [show zorder | zorder /= 0]) where
                                  marker_type = case shapeType marker of
                                                  ShapeArrow          -> "a"
                                                  ShapeCross          -> "c"
@@ -101,7 +101,7 @@ instance ChartMarker ShapeMarker where
                                  size = show $ shapeSize marker
                                  width = case shapeWidth marker of
                                            Nothing -> ""
-                                           Just x  -> ":" ++ show x
+                                           Just x  -> ':' : show x
                                  zorder = shapeZorder marker
 
                                  optionalat = [ '@' | isDataPointXY $ shapeDataPoints marker ]
@@ -133,6 +133,13 @@ instance ChartMarker FinancialMarker where
                                  idx  = show $ financeDataSetIdx marker
                                  size = show $ financeSize marker
                                  priority = financePriority marker
+
+-- Line Fills
+instance ChartMarker LineFillMarker where
+    encodeChartMarker (LineFillMarker lineFillType color) = intercalate ","  [b_or_B, color, show startIdx, show endIdx, "0"] where
+                                 (b_or_B, startIdx, endIdx) = case lineFillType of
+                                                        LineFillFrom s      -> ("B",s,0)
+                                                        LineFillBetween s e -> ("b",s,e)
 
 -- Pie Chart Orientation
 instance ChartItem PieChartOrientation where
