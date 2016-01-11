@@ -1,4 +1,5 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Graphics.GChart.ChartItems (
   getChartDataFromChartM,
   addDataToChart,
